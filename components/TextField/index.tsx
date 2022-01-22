@@ -3,16 +3,9 @@ import { Path, useFormContext } from 'react-hook-form';
 
 import * as S from './styles';
 
-type FormValues = {
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-};
-
 type TextFieldProps = {
   label: string;
-  name: Path<FormValues>;
+  name: Path<Record<string, string>>;
 } & InputHTMLAttributes<HTMLInputElement>;
 
 export default function TextField({ label, name, ...props }: TextFieldProps) {
@@ -23,10 +16,10 @@ export default function TextField({ label, name, ...props }: TextFieldProps) {
 
   return (
     <S.Wrapper>
-      <div>
-        <S.Label htmlFor={name}>{label}</S.Label>
+      <S.LabelWrapper>
+        <label htmlFor={name}>{label}</label>
         {errors[name] && <S.Error role="alert">{errors[name].message}</S.Error>}
-      </div>
+      </S.LabelWrapper>
 
       <S.Input
         id={name}

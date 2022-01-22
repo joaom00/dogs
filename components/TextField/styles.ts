@@ -11,18 +11,20 @@ export const Wrapper = styled.div`
   `}
 `;
 
-export const Label = styled.label``;
+export const LabelWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
 export const Input = styled.input<{ error: boolean }>`
   ${({ theme, error }) => css`
     outline: none;
-    padding: 1.2rem ${theme.space.sm};
+    padding: 1rem ${theme.space.sm};
     border-radius: ${theme.radii.base};
 
-    border: 1px solid ${theme.colors.sand6};
+    border: 1.5px solid ${theme.colors.sand6};
 
     &:focus {
-      box-shadow: 0 0 0 3px ${theme.colors.yellow3}, 0 0 0 3px ${theme.colors.yellow3};
       border-color: ${theme.colors.yellow7};
     }
 
