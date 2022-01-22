@@ -4,6 +4,9 @@ const nextConfig = {
   experimental: {
     styledComponents: true,
   },
+  images: {
+    domains: ['schveufltdgsfxvyzrwb.supabase.in'],
+  },
 };
 
 module.exports = nextConfig;
