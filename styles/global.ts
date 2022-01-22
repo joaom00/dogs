@@ -31,61 +31,11 @@ const GlobalStyles = createGlobalStyle`
   src: url('/fonts/spectral-v7-latin-700.woff2') format('woff2')
 }
 
-
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
-}
-body {
-  line-height: 1;
-  font-size: ${({ theme }) => theme.font.sizes.medium};
-  background-color: ${({ theme }) => theme.colors.gray.offWhite};
-}
-ol, ul {
-	list-style: none;
-}
-blockquote, q {
-	quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
-}
-table {
-	border-collapse: collapse;
-	border-spacing: 0;
-}
-
-:root {
-  --toastify-color-error: #ED2E7E;
-  --toastify-color-success: #00BA88;
-}
-
 *,
 *:before,
 *:after {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -94,6 +44,14 @@ table {
 html {
   font-size: 62.5%;
 }
+
+body {
+  line-height: 1;
+  font-size: ${({ theme }) => theme.font.sizes.medium};
+  background-color: ${({ theme }) => theme.colors.sand1};
+  color: ${({ theme }) => theme.colors.sand12};
+}
+
 
 html,
 input,
@@ -104,10 +62,23 @@ option {
 }
 
 button {
+  appearance: none;
+  --webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-progress-appearance: none;
+  background: none;
+  outline: none;
+  border: 0;
+  font-size: inherit;
   cursor: pointer;
 }
 
+ul {
+  list-style-type: none;
+}
+
 a {
+  color: inherit;
   text-decoration: none;
 }
 `;
