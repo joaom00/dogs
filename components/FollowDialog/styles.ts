@@ -10,7 +10,8 @@ export const FollowWrapper = styled.div`
     img {
       width: 3rem;
       height: 3rem;
-      border-radius: 50%;
+      object-fit: cover;
+      border-radius: 9999px;
     }
   `}
 `;

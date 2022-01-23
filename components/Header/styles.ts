@@ -48,6 +48,10 @@ export const DropdownMenuTrigger = styled(Trigger)`
   ${({ theme }) => css`
     cursor: pointer;
     color: ${theme.colors.sand12};
+
+    img {
+      border-radius: 9999px;
+    }
   `}
 `;
 

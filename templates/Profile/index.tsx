@@ -1,14 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
+import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
 import { FollowButton, UnfollowButton, FollowDialog, Logo } from '@/components';
 
-import { getProfile } from './queries';
+import { getProfile, ProfileResponse } from './queries';
 
 import * as S from './styles';
 
@@ -17,6 +18,8 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
   const router = useRouter();
   const username = router.query.username as string;
 
+  const queryClient = useQueryClient();
+
   const [isFollowed, setIsFollowed] = React.useState(_isFollowed);
   const [openFollowers, setOpenFollowers] = React.useState(false);
   const [openFollowing, setOpenFollowing] = React.useState(false);
@@ -24,6 +27,37 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
   const profileQuery = useQuery([{ scope: 'profile', username }], getProfile);
 
   const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
+
+  const uploadFileMutation = useMutation(uploadFile, {
+    onSuccess: (_data, file) => {
+      const key = [{ scope: 'profile', username: user?.user_metadata.username }];
+
+      const userLoggedData = queryClient.getQueryData<ProfileResponse>(key);
+
+      queryClient.setQueryData(key, () => ({
+        ...userLoggedData,
+        avatar_url: URL.createObjectURL(file),
+      }));
+
+      queryClient.setQueryData(['header_image'], () => ({
+        avatar_url: URL.createObjectURL(file),
+      }));
+    },
+  });
+
+  async function uploadFile(file: File) {
+    await supabase.storage.from('photos/avatars').upload(file.name, file);
+    const { publicURL } = supabase.storage.from('photos/avatars').getPublicUrl(file.name);
+    await supabase
+      .from('profiles')
+      .update({ avatar_url: publicURL })
+      .match({ username: user?.user_metadata.username });
+  }
+
+  async function onFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files![0];
+    uploadFileMutation.mutate(file);
+  }
 
   if (!profileQuery.data) {
     return (
@@ -42,10 +76,18 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
   return (
     <>
       <S.ProfileWrapper>
-        <S.ProfileImage
-          src={profileQuery.data.avatar_url}
-          alt={`Imagem de perfil de ${profileQuery.data.username}`}
-        />
+        <S.ProfileImageWrapper>
+          <S.ProfileImage
+            src={profileQuery.data.avatar_url}
+            alt={`Imagem de perfil de ${profileQuery.data.username}`}
+          />
+          <input
+            type="file"
+            accept="image/jpg, image/png, image/jpeg"
+            onChange={onFileChange}
+            style={{ display: 'none' }}
+          />
+        </S.ProfileImageWrapper>
         <S.ProfileInfo>
           <S.ProfileUsername>{profileQuery.data.username}</S.ProfileUsername>
           {!!user &&

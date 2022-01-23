@@ -11,15 +11,24 @@ import Logo from '@/components/Logo';
 import AddPostDialog from '@/components/AddPostDialog';
 
 import * as S from './styles';
+import { useQuery } from 'react-query';
 
 export default function Header() {
   const [openDropdown, setOpenDropdown] = React.useState(false);
   const [openNewPostDialog, setOpenNewPostDialog] = React.useState(false);
-  const [avatarUrl, setAvatarUrl] = React.useState('');
 
   const { user } = useUser();
 
   const router = useRouter();
+
+  const { data } = useQuery(['header_image'], async () => {
+    const { data } = await supabase
+      .from('profiles')
+      .select('avatar_url')
+      .match({ username: user?.user_metadata.username });
+
+    if (data?.length) return data[0];
+  });
 
   async function handleSignOut() {
     await supabase.auth.signOut();
@@ -33,19 +42,6 @@ export default function Header() {
   function onPostDialogOpen() {
     setOpenNewPostDialog(true);
   }
-
-  React.useEffect(() => {
-    async function getProfile() {
-      const { data } = await supabase
-        .from('profiles')
-        .select('avatar_url')
-        .match({ email: user?.email });
-
-      if (data?.length) setAvatarUrl(data[0].avatar_url);
-    }
-
-    getProfile();
-  }, [user]);
 
   return (
     <S.Wrapper>
@@ -65,11 +61,12 @@ export default function Header() {
                 <S.DropdownMenuTrigger>
                   <Image
                     src={
-                      avatarUrl ||
+                      data?.avatar_url ??
                       'https://schveufltdgsfxvyzrwb.supabase.in/storage/v…5NTF9.Yy91yZJX1O_8VG3Gjkr1QXoaRFUigbchHaD20hhHF9A'
                     }
                     width={24}
                     height={24}
+                    objectFit="cover"
                     alt="foto"
                   />
                 </S.DropdownMenuTrigger>

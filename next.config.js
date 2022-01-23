@@ -5,7 +5,7 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    domains: ['schveufltdgsfxvyzrwb.supabase.in'],
+    domains: ['schveufltdgsfxvyzrwb.supabase.in', 'localhost'],
   },
 };
 

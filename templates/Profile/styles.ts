@@ -30,10 +30,12 @@ export const ProfileWrapper = styled.section`
   `}
 `;
 
+export const ProfileImageWrapper = styled.label`
+  grid-area: profileImage;
+`;
+
 export const ProfileImage = styled.img`
   ${({ theme }) => css`
-    grid-area: profileImage;
-
     width: 8.4rem;
     height: 8.4rem;
     border-radius: 50%;
