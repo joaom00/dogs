@@ -6,17 +6,18 @@ import { useQuery } from 'react-query';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
-import { Button, FollowDialog, Logo } from '@/components';
+import { FollowButton, UnfollowButton, FollowDialog, Logo } from '@/components';
 
 import { getProfile } from './queries';
 
 import * as S from './styles';
 
-export default function ProfileTemplate() {
+export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowed: boolean }) {
   const { user } = useUser();
   const router = useRouter();
   const username = router.query.username as string;
 
+  const [isFollowed, setIsFollowed] = React.useState(_isFollowed);
   const [openFollowers, setOpenFollowers] = React.useState(false);
   const [openFollowing, setOpenFollowing] = React.useState(false);
 
@@ -47,7 +48,14 @@ export default function ProfileTemplate() {
         />
         <S.ProfileInfo>
           <S.ProfileUsername>{profileQuery.data.username}</S.ProfileUsername>
-          {!isUserLoggedProfile && <Button>Seguir</Button>}
+          {!!user &&
+            (!isUserLoggedProfile ? (
+              isFollowed ? (
+                <UnfollowButton onFollowChange={setIsFollowed} />
+              ) : (
+                <FollowButton onFollowChange={setIsFollowed} />
+              )
+            ) : null)}
         </S.ProfileInfo>
         <S.ProfileStats>
           <p>
@@ -106,6 +114,7 @@ export default function ProfileTemplate() {
         open={openFollowers}
         onOpenChange={setOpenFollowers}
       />
+
       <FollowDialog
         title="Seguindo"
         type="following"

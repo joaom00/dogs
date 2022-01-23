@@ -44,7 +44,7 @@ export default function NewPostDialog(props: DialogProps) {
           <S.DialogContent asChild>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <S.DialogTitleWrapper>
-                <S.DialogTitle>Cria nova publicação</S.DialogTitle>
+                <S.DialogTitle>Criar nova publicação</S.DialogTitle>
                 <S.SendButton type="submit">Compartilhar</S.SendButton>
               </S.DialogTitleWrapper>
               <S.DialogContentMain>

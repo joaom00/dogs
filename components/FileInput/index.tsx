@@ -63,7 +63,7 @@ function DropzoneView({ fileRejections, open }: DropzoneViewProps) {
         <span>
           Não foi possível carregar o arquivo <strong>{fileRejections[0].file.name}</strong>
         </span>
-        <S.DropzoneButton onClick={open}>Selecionar outros arquivos</S.DropzoneButton>
+        <S.DropzoneButton onClick={open}>Selecionar outro arquivo</S.DropzoneButton>
       </S.DropzoneWrapper>
     );
   }
@@ -71,7 +71,7 @@ function DropzoneView({ fileRejections, open }: DropzoneViewProps) {
   return (
     <S.DropzoneWrapper>
       <DropzoneIcon />
-      <p>Arraste as fotos aqui</p>
+      <p>Arraste a foto aqui</p>
       <S.DropzoneButton onClick={open}>Selecionar do computador</S.DropzoneButton>
     </S.DropzoneWrapper>
   );

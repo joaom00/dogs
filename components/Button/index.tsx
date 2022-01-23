@@ -1,14 +1,21 @@
+import React from 'react';
+
 import * as S from './styles';
 
-type TButtonProps = {
+type ButtonProps = {
+  variant?: 'primary' | 'secondary';
   size?: 'small' | 'medium';
   children: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export default function Button({ size = 'small', children, ...props }: TButtonProps) {
-  return (
-    <S.Wrapper type="button" size={size} {...props}>
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ variant = 'primary', size = 'small', children, ...props }, forwardedRef) => (
+    <S.Wrapper type="button" variant={variant} size={size} {...props} ref={forwardedRef}>
       {children}
     </S.Wrapper>
-  );
-}
+  )
+);
+
+Button.displayName = 'Button';
+
+export default Button;

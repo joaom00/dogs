@@ -6,7 +6,7 @@ type CustomKeys = Array<{
   username: string;
 }>;
 
-type ProfileResponse = {
+export type ProfileResponse = {
   name: string;
   username: string;
   avatar_url: string;

@@ -5,24 +5,49 @@ import { SignUpWrapper } from '@/templates/SignUp/styles';
 import { SignInWrapper } from '@/templates/SignIn/styles';
 
 type WrapperProps = {
+  variant: 'primary' | 'secondary';
   size: 'small' | 'medium';
 };
 
 const modifiers = {
+  primary: (theme: DefaultTheme) => css`
+    background-color: ${theme.colors.yellow9};
+
+    &:hover {
+      background-color: ${theme.colors.yellow10};
+    }
+
+    &:disabled {
+      background-color: ${theme.colors.yellow6};
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px ${theme.colors.yellow7}, 0 0 0 4px ${theme.colors.yellow7};
+    }
+  `,
+
+  secondary: (theme: DefaultTheme) => css`
+    border: 1.5px solid ${theme.colors.sand6};
+
+    &:focus {
+      box-shadow: 0 0 0 3px ${theme.colors.yellow4};
+      border-color: ${theme.colors.yellow7};
+    }
+  `,
+
   small: (theme: DefaultTheme) => css`
-    padding: 0.8rem 1.6rem;
+    padding: ${theme.space.xs} ${theme.space.sm};
     font-size: ${theme.font.sizes.small};
   `,
 
   medium: (theme: DefaultTheme) => css`
-    padding: ${theme.space.sm};
+    padding: 0.6rem ${theme.space.md};
   `,
 };
 
 export const Wrapper = styled.button<WrapperProps>`
-  ${({ theme, size }) => css`
+  ${({ theme, variant, size }) => css`
     color: ${theme.colors.yellow12};
-    background-color: ${theme.colors.yellow9};
     font-weight: ${theme.font.bold};
     transition: all 0.1s;
     letter-spacing: 0.08em;
@@ -33,15 +58,8 @@ export const Wrapper = styled.button<WrapperProps>`
     align-items: center;
     gap: ${theme.space.xs};
 
+    ${modifiers[variant](theme)}
     ${modifiers[size](theme)};
-
-    &:hover {
-      background-color: ${theme.colors.yellow10};
-    }
-
-    &:focus {
-      box-shadow: 0 0 0 3px ${theme.colors.yellow7}, 0 0 0 4px ${theme.colors.yellow7};
-    }
 
     ${SignUpWrapper} &, ${SignInWrapper} & {
       max-width: 40rem;
