@@ -8,7 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import Logo from '@/components/Logo';
-import NewPostDialog from '@/components/NewPostDialog';
+import AddPostDialog from '@/components/AddPostDialog';
 
 import * as S from './styles';
 
@@ -105,7 +105,7 @@ export default function Header() {
         </S.NavList>
       </S.Container>
 
-      <NewPostDialog open={openNewPostDialog} onOpenChange={setOpenNewPostDialog} />
+      <AddPostDialog open={openNewPostDialog} onOpenChange={setOpenNewPostDialog} />
     </S.Wrapper>
   );
 }

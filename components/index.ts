@@ -5,3 +5,4 @@ export { default as Logo } from './Logo';
 export { default as Post } from './Post';
 export { default as TextField } from './TextField';
 export { default as Spinner } from './Spinner';
+export { default as FollowDialog } from './FollowDialog';
