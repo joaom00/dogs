@@ -177,10 +177,19 @@ export const Feed = styled.ul`
   `}
 `;
 
+export const NoPosts = styled.p`
+  ${({ theme }) => css`
+    text-align: center;
+    grid-column: span 3;
+    margin-top: 10rem;
+    font-weight: ${theme.font.medium};
+  `}
+`;
+
 export const Overlay = styled.div`
   ${({ theme }) => css`
     grid-area: 1/1;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.3);
     z-index: 2;
 
     display: none;
@@ -189,45 +198,11 @@ export const Overlay = styled.div`
     gap: ${theme.space.md};
 
     color: white;
-  `}
-`;
 
-export const FollowWrapper = styled.div`
-  ${({ theme }) => css`
-    display: grid;
-    grid-template-columns: 40px 1fr 76px;
-    align-items: center;
-    padding: ${theme.space.sm} ${theme.space.md};
-
-    img {
-      width: 3rem;
-      height: 3rem;
-      border-radius: 50%;
+    span {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
     }
-  `}
-`;
-
-export const FollowUsername = styled.p`
-  ${({ theme }) => css`
-    font-weight: ${theme.font.medium};
-    font-size: ${theme.font.sizes.small};
-    margin-bottom: 4px;
-  `}
-`;
-
-export const FollowName = styled.p`
-  ${({ theme }) => css`
-    font-size: ${theme.font.sizes.small};
-    color: ${theme.colors.sand11};
-  `}
-`;
-
-export const FollowAction = styled.button`
-  ${({ theme }) => css`
-    font-size: ${theme.font.sizes.small};
-    border: 1px solid ${theme.colors.sand6};
-    color: ${theme.colors.sand12};
-    border-radius: ${theme.radii.base};
-    height: 100%;
   `}
 `;
