@@ -1,34 +1,23 @@
-import { supabase } from '@/lib/supabase';
-import ProfileTemplate from '@/templates/Profile';
 import { GetServerSidePropsContext } from 'next';
+import { dehydrate, QueryClient } from 'react-query';
 
-type User = {
-  name: string;
-  username: string;
-  avatar_url: string;
-  bio: string;
-  posts: Array<{
-    id: string;
-    image_url: string;
-  }>;
-};
+import ProfileTemplate from '@/templates/Profile';
+import { getProfile } from '@/templates/Profile/queries';
 
-export default function Profile({ user }: { user: User | null }) {
-  return <ProfileTemplate user={user} />;
+export default function Profile() {
+  return <ProfileTemplate />;
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const { username } = ctx.query;
+  const query = ctx.query;
+  const username = query.username as string;
 
-  const res = await supabase
-    .from('profiles')
-    .select('name, username, bio, avatar_url, posts (id, image_url)')
-    .match({ username })
-    .order('created_at', { foreignTable: 'posts', ascending: false });
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([{ scope: 'profile', username }], getProfile);
 
   return {
     props: {
-      user: res.data?.length ? res.data[0] : null,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 }
