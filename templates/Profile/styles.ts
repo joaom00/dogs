@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Wrapper = styled.div`
+export const ProfileWrapper = styled.section`
   ${({ theme }) => css`
     max-width: 93.5rem;
     margin: 0 auto;
@@ -17,7 +17,7 @@ export const Wrapper = styled.div`
       'profileBio profileBio'
       'profileStats profileStats';
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       padding: ${theme.space.md} ${theme.space.xl};
       padding-bottom: ${theme.space['3xl']};
       grid-template-columns: 18.4rem 1fr;
@@ -40,7 +40,7 @@ export const ProfileImage = styled.img`
     object-fit: cover;
     cursor: pointer;
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       width: 18.4rem;
       height: 18.4rem;
     }
@@ -51,7 +51,7 @@ export const ProfileInfo = styled.div`
   ${({ theme }) => css`
     grid-area: profileInfo;
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       display: flex;
       align-items: center;
       gap: ${theme.space.sm};
@@ -67,7 +67,7 @@ export const ProfileUsername = styled.p`
     font-weight: ${theme.font.medium};
     margin-bottom: ${theme.space.sm};
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       margin-bottom: 0;
     }
   `}
@@ -104,7 +104,7 @@ export const ProfileStats = styled.div`
       cursor: pointer;
     }
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       width: auto;
       position: inherit;
       left: 0;
@@ -145,7 +145,7 @@ export const Feed = styled.ul`
     grid-template-columns: repeat(3, 1fr);
     grid-gap: 0.8rem;
 
-    @media ${theme.media.greaterThan('medium')} {
+    @media ${theme.media.greaterThan('small')} {
       grid-gap: 2.8rem;
     }
 
@@ -165,7 +165,7 @@ export const Feed = styled.ul`
         object-fit: cover;
         display: block;
 
-        @media ${theme.media.greaterThan('medium')} {
+        @media ${theme.media.greaterThan('small')} {
           height: 29.3rem;
         }
       }
@@ -177,13 +177,35 @@ export const Feed = styled.ul`
   `}
 `;
 
-export const NoPosts = styled.p`
+export const NoPosts = styled.div`
   ${({ theme }) => css`
-    text-align: center;
     grid-column: span 3;
-    margin-top: 10rem;
-    font-weight: ${theme.font.medium};
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: ${theme.space.xl};
+    margin-top: ${theme.space['4xl']};
+
+    p {
+      font-size: ${theme.font.sizes.large};
+      font-weight: ${theme.font.medium};
+      text-align: center;
+    }
   `}
+`;
+
+export const UserNotFound = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2.4rem;
+  margin-top: 10rem;
+
+  a {
+    text-decoration: underline;
+  }
 `;
 
 export const Overlay = styled.div`

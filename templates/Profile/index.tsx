@@ -1,11 +1,12 @@
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 
 import { useUser } from '@/context/AuthContext';
 
-import { HeartIcon, ChatIcon } from '@/icons';
-import { Button, FollowDialog } from '@/components';
+import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
+import { Button, FollowDialog, Logo } from '@/components';
 
 import { getProfile } from './queries';
 
@@ -21,20 +22,32 @@ export default function ProfileTemplate() {
 
   const profileQuery = useQuery([{ scope: 'profile', username }], getProfile);
 
+  const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
+
   if (!profileQuery.data) {
-    return <div>pagina nao existe</div>;
+    return (
+      <S.UserNotFound>
+        <h2>Esta página não está disponível.</h2>
+        <p>
+          O link que você acessou pode estar quebrado ou a página pode ter sido removida.{' '}
+          <Link href="/">
+            <a>Voltar para o início.</a>
+          </Link>
+        </p>
+      </S.UserNotFound>
+    );
   }
 
   return (
     <>
-      <S.Wrapper>
+      <S.ProfileWrapper>
         <S.ProfileImage
           src={profileQuery.data.avatar_url}
           alt={`Imagem de perfil de ${profileQuery.data.username}`}
         />
         <S.ProfileInfo>
           <S.ProfileUsername>{profileQuery.data.username}</S.ProfileUsername>
-          {user?.user_metadata.username !== profileQuery.data.username && <Button>Seguir</Button>}
+          {!isUserLoggedProfile && <Button>Seguir</Button>}
         </S.ProfileInfo>
         <S.ProfileStats>
           <p>
@@ -51,12 +64,25 @@ export default function ProfileTemplate() {
           <p>{profileQuery.data.name}</p>
           <p>{profileQuery.data.bio}</p>
         </S.ProfileBio>
-      </S.Wrapper>
+      </S.ProfileWrapper>
+
       <S.Feed>
         {!profileQuery.data.posts.length && (
-          // TODO: melhorar tela quando usuário não tiver publicações
-          <S.NoPosts>Comece a capturar e a compartilhar seus momentos</S.NoPosts>
+          <S.NoPosts>
+            {isUserLoggedProfile ? (
+              <>
+                <Logo size="large" />
+                <p>Comece a capturar e a compartilhar seus momentos</p>
+              </>
+            ) : (
+              <>
+                <CameraIcon size={28} />
+                <p>Ainda não há nenhuma publicação</p>
+              </>
+            )}
+          </S.NoPosts>
         )}
+
         {profileQuery.data.posts.map((post) => (
           <li key={post.id}>
             <S.Overlay>
