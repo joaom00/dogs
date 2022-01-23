@@ -1,17 +1,11 @@
 import React from 'react';
-import {
-  DialogProps,
-  DialogContentProps,
-  DialogTitleProps,
-  Root,
-  Trigger,
-} from '@radix-ui/react-dialog';
+import { DialogProps, DialogContentProps, DialogTitleProps, Root } from '@radix-ui/react-dialog';
 
 import { CloseIcon } from '@/icons';
 
 import * as S from './styles';
 
-export function Dialog({ children, ...props }: DialogProps) {
+export default function Dialog({ children, ...props }: DialogProps) {
   return (
     <Root {...props}>
       <S.DialogOverlay />
@@ -20,9 +14,7 @@ export function Dialog({ children, ...props }: DialogProps) {
   );
 }
 
-export const DialogTrigger = Trigger;
-
-export const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
+const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
   ({ children, ...props }, forwardedRef) => (
     <S.DialogTitleWrapper>
       <S.DialogTitle {...props} ref={forwardedRef}>
@@ -34,7 +26,7 @@ export const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps
 
 DialogTitle.displayName = 'DialogTitle';
 
-export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
+const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
   ({ children, ...props }, forwardedRef) => (
     <S.DialogContent {...props} ref={forwardedRef}>
       {children}
@@ -46,3 +38,6 @@ export const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps
 );
 
 DialogContent.displayName = 'DialogContent';
+
+Dialog.Title = DialogTitle;
+Dialog.Content = DialogContent;
