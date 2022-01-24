@@ -18,13 +18,8 @@ type FollowResponse = Array<{
   };
 }>;
 
-type FollowDialogContentProps = DialogPrimitive.DialogContentProps & {
+type FollowDialogProps = DialogPrimitive.DialogProps & {
   type: 'followers' | 'following';
-};
-
-type FollowDialogContextData = {
-  open: boolean;
-  onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const querys = {
@@ -32,37 +27,10 @@ const querys = {
   following: 'follow:followed_username(name, username, avatar_url)',
 };
 
-const FollowDialogContext = React.createContext<FollowDialogContextData | undefined>(undefined);
-
-const useFollowDialogContext = () => {
-  const context = React.useContext(FollowDialogContext);
-
-  if (context === undefined) {
-    throw new Error('useFollowDialogContext must be used within FollowDialog');
-  }
-
-  return context;
-};
-
-const FollowDialog = (props: DialogPrimitive.DialogProps) => {
-  const [open, setOpen] = React.useState(false);
-
-  return (
-    <FollowDialogContext.Provider
-      value={React.useMemo(() => ({ open, onOpenChange: setOpen }), [open])}
-    >
-      <Dialog open={open} onOpenChange={setOpen} {...props} />
-    </FollowDialogContext.Provider>
-  );
-};
-
-const FollowDialogTrigger = (props: DialogPrimitive.DialogTriggerProps) => {
-  return <DialogPrimitive.Trigger {...props} />;
-};
-
-const FollowDialogContent = ({ type, ...props }: FollowDialogContentProps) => {
+const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
   const router = useRouter();
-  const context = useFollowDialogContext();
+
+  const [open, setOpen] = React.useState(false);
 
   async function getFollows(): Promise<FollowResponse | null> {
     const res = await supabase
@@ -74,45 +42,44 @@ const FollowDialogContent = ({ type, ...props }: FollowDialogContentProps) => {
   }
 
   const followQuery = useQuery([{ scope: type, username: router.query.username }], getFollows, {
-    enabled: context.open,
+    enabled: open,
   });
 
   return (
-    <Dialog.Content {...props}>
-      <Dialog.Title>{type === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
+    <Dialog open={open} onOpenChange={setOpen} {...props}>
+      <DialogPrimitive.Trigger asChild>{children}</DialogPrimitive.Trigger>
+      <Dialog.Content>
+        <Dialog.Title>{type === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
 
-      {!followQuery.data?.length && (
-        <S.NoFollow>
-          {type === 'followers'
-            ? 'Você não possui nenhum seguidor'
-            : 'Você não está seguindo ninguém'}
-        </S.NoFollow>
-      )}
+        {!followQuery.data?.length && (
+          <S.NoFollow>
+            {type === 'followers'
+              ? 'Você não possui nenhum seguidor'
+              : 'Você não está seguindo ninguém'}
+          </S.NoFollow>
+        )}
 
-      {followQuery.data?.map(({ follow }) => (
-        <S.FollowWrapper key={follow.username}>
-          <Link href={`/${follow.username}`}>
-            <a onClick={() => context.onOpenChange(false)}>
-              <img src={follow.avatar_url} alt={`Foto de perfil de ${follow.username}`} />
-            </a>
-          </Link>
-          <div>
-            <Link href={`/${follow.username}`} passHref>
-              <S.FollowUsername onClick={() => context.onOpenChange(false)}>
-                {follow.username}
-              </S.FollowUsername>
+        {followQuery.data?.map(({ follow }) => (
+          <S.FollowWrapper key={follow.username}>
+            <Link href={`/${follow.username}`}>
+              <a onClick={() => setOpen(false)}>
+                <img src={follow.avatar_url} alt={`Foto de perfil de ${follow.username}`} />
+              </a>
             </Link>
-            <S.FollowName>{follow.name}</S.FollowName>
-          </div>
-          <S.FollowAction>Remover</S.FollowAction>
-        </S.FollowWrapper>
-      ))}
-    </Dialog.Content>
+            <div>
+              <Link href={`/${follow.username}`} passHref>
+                <S.FollowUsername onClick={() => setOpen(false)}>
+                  {follow.username}
+                </S.FollowUsername>
+              </Link>
+              <S.FollowName>{follow.name}</S.FollowName>
+            </div>
+            <S.FollowAction>Remover</S.FollowAction>
+          </S.FollowWrapper>
+        ))}
+      </Dialog.Content>
+    </Dialog>
   );
 };
 
-const Root = FollowDialog;
-const Trigger = FollowDialogTrigger;
-const Content = FollowDialogContent;
-
-export { Root, Trigger, Content };
+export default FollowDialog;

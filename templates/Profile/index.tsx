@@ -70,23 +70,17 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
             <strong>{profileQuery.data.postsCount[0].count}</strong> publicações
           </p>
 
-          <FollowDialog.Root>
-            <FollowDialog.Trigger asChild>
-              <p>
-                <strong>{profileQuery.data.followersCount[0].count}</strong> seguidores
-              </p>
-            </FollowDialog.Trigger>
-            <FollowDialog.Content type="followers" />
-          </FollowDialog.Root>
+          <FollowDialog type="followers">
+            <p>
+              <strong>{profileQuery.data.followersCount[0].count}</strong> seguidores
+            </p>
+          </FollowDialog>
 
-          <FollowDialog.Root>
-            <FollowDialog.Trigger asChild>
-              <p>
-                <strong>{profileQuery.data.followingCount[0].count}</strong> seguindo
-              </p>
-            </FollowDialog.Trigger>
-            <FollowDialog.Content type="following" />
-          </FollowDialog.Root>
+          <FollowDialog type="following">
+            <p>
+              <strong>{profileQuery.data.followingCount[0].count}</strong> seguindo
+            </p>
+          </FollowDialog>
         </S.ProfileStats>
         <S.ProfileBio>
           <p>{profileQuery.data.name}</p>
