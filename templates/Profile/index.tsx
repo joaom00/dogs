@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
-import { FollowButton, UnfollowButton, FollowDialog, Logo } from '@/components';
+import { FollowDialog, FollowButton, UnfollowButton, Logo } from '@/components';
 
 import { getProfile, ProfileResponse } from './queries';
 
@@ -21,10 +21,10 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
   const queryClient = useQueryClient();
 
   const [isFollowed, setIsFollowed] = React.useState(_isFollowed);
-  const [openFollowers, setOpenFollowers] = React.useState(false);
-  const [openFollowing, setOpenFollowing] = React.useState(false);
 
-  const profileQuery = useQuery([{ scope: 'profile', username }], getProfile);
+  const profileQuery = useQuery([{ scope: 'profile', username }], getProfile, {
+    staleTime: Infinity,
+  });
 
   const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
 
@@ -103,12 +103,24 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
           <p>
             <strong>{profileQuery.data.postsCount[0].count}</strong> publicações
           </p>
-          <p onClick={() => setOpenFollowers(true)}>
-            <strong>{profileQuery.data.followersCount[0].count}</strong> seguidores
-          </p>
-          <p onClick={() => setOpenFollowing(true)}>
-            <strong>{profileQuery.data.followingCount[0].count}</strong> seguindo
-          </p>
+
+          <FollowDialog.Root>
+            <FollowDialog.Trigger asChild>
+              <p>
+                <strong>{profileQuery.data.followersCount[0].count}</strong> seguidores
+              </p>
+            </FollowDialog.Trigger>
+            <FollowDialog.Content type="followers" />
+          </FollowDialog.Root>
+
+          <FollowDialog.Root>
+            <FollowDialog.Trigger asChild>
+              <p>
+                <strong>{profileQuery.data.followingCount[0].count}</strong> seguindo
+              </p>
+            </FollowDialog.Trigger>
+            <FollowDialog.Content type="following" />
+          </FollowDialog.Root>
         </S.ProfileStats>
         <S.ProfileBio>
           <p>{profileQuery.data.name}</p>
@@ -149,20 +161,6 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
           </li>
         ))}
       </S.Feed>
-
-      <FollowDialog
-        title="Seguidores"
-        type="followers"
-        open={openFollowers}
-        onOpenChange={setOpenFollowers}
-      />
-
-      <FollowDialog
-        title="Seguindo"
-        type="following"
-        open={openFollowing}
-        onOpenChange={setOpenFollowing}
-      />
     </>
   );
 }

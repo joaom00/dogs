@@ -1,9 +1,10 @@
 import { GetServerSidePropsContext } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
 
+import { supabase } from '@/lib/supabase';
+
 import ProfileTemplate from '@/templates/Profile';
 import { getProfile } from '@/templates/Profile/queries';
-import { supabase } from '@/lib/supabase';
 
 export default function Profile({ isFollowed }: { isFollowed: boolean }) {
   return <ProfileTemplate isFollowed={isFollowed} />;
