@@ -29,6 +29,7 @@ export const AlertDialogContent = styled(Content)`
   transform: translate(-50%, -50%);
   width: 400px;
   height: 300px;
+  overflow: hidden;
 
   background-color: white;
   border-radius: 12px;
@@ -87,6 +88,10 @@ export const AlertDialogAction = styled(Action)`
     border-top: 1px solid ${theme.colors.sand6};
     padding: 1.2rem;
     font-weight: ${theme.font.medium};
+
+    &:focus {
+      background-color: ${theme.colors.yellow3};
+    }
   `}
 `;
 
@@ -94,5 +99,9 @@ export const AlertDialogCancel = styled(Cancel)`
   ${({ theme }) => css`
     border-top: 1px solid ${theme.colors.sand6};
     padding: 1.2rem;
+
+    &:focus {
+      background-color: ${theme.colors.yellow3};
+    }
   `}
 `;
