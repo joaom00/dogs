@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
 import { useUser } from '@/context/AuthContext';
 
@@ -10,7 +11,7 @@ import { useProfileQuery, useUploadFileMutation } from './queries';
 
 import * as S from './styles';
 
-export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowed: boolean }) {
+const ProfileTemplate = ({ isFollowed: _isFollowed }: { isFollowed: boolean }) => {
   const { user } = useUser();
 
   const profileQuery = useProfileQuery();
@@ -21,8 +22,18 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
   const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files![0];
-    uploadFileMutation.mutate({ file, username: user?.user_metadata.username });
+    if (!event.target.files) return;
+
+    const file = event.target.files[0];
+
+    uploadFileMutation.mutate(
+      { file, username: user?.user_metadata.username },
+      {
+        onSuccess: () => {
+          toast.success('Foto de perfil atualizada');
+        },
+      }
+    );
   };
 
   if (!profileQuery.data) {
@@ -123,4 +134,6 @@ export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowe
       </S.Feed>
     </>
   );
-}
+};
+
+export default ProfileTemplate;

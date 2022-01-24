@@ -47,8 +47,10 @@ export const useProfileQuery = () => {
 };
 
 const uploadFile = async ({ file, username }: { file: File; username: string }) => {
-  await supabase.storage.from('photos/avatars').upload(file.name, file);
-  const { publicURL } = supabase.storage.from('photos/avatars').getPublicUrl(file.name);
+  await supabase.storage.from(`avatars`).upload(`${username}-${file.name}`, file);
+
+  const { publicURL } = supabase.storage.from(`avatars`).getPublicUrl(`${username}-${file.name}`);
+
   await supabase.from('profiles').update({ avatar_url: publicURL }).match({ username });
 };
 

@@ -43,9 +43,8 @@ export default function SignUpTemplate() {
     if (!email) return;
 
     const { data } = await supabase.from('profiles').select('email').eq('email', email);
-    const user = data![0];
 
-    if (user) {
+    if (data && data[0]) {
       methods.setError('email', {
         type: 'custom',
         message: 'Endereço de e-mail já cadastrado',
@@ -65,9 +64,8 @@ export default function SignUpTemplate() {
     if (!username) return;
 
     const { data } = await supabase.from('profiles').select('username').eq('username', username);
-    const user = data![0];
 
-    if (user) {
+    if (data && data[0]) {
       methods.setError('username', {
         type: 'custom',
         message: 'Nome de usuário já existe',

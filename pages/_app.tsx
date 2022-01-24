@@ -29,6 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         },
       })
   );
+
   const withHeader = Component.withHeader ?? true;
 
   return (
