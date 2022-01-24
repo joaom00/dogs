@@ -1,12 +1,14 @@
+import { useRouter } from 'next/router';
+import { QueryFunctionContext, useMutation, useQuery, useQueryClient } from 'react-query';
+
 import { supabase } from '@/lib/supabase';
-import { QueryFunctionContext } from 'react-query';
 
 type CustomKeys = Array<{
   scope: string;
   username: string;
 }>;
 
-export type ProfileResponse = {
+type ProfileResponse = {
   name: string;
   username: string;
   avatar_url: string;
@@ -22,9 +24,9 @@ export type ProfileResponse = {
   }>;
 };
 
-export async function getProfile({
+export const getProfile = async ({
   queryKey: [{ username }],
-}: QueryFunctionContext<CustomKeys>): Promise<ProfileResponse> {
+}: QueryFunctionContext<CustomKeys>): Promise<ProfileResponse> => {
   const res = await supabase
     .from('profiles')
     .select(
@@ -35,4 +37,38 @@ export async function getProfile({
     .single();
 
   return res.data;
-}
+};
+
+export const useProfileQuery = () => {
+  const router = useRouter();
+  const username = router.query.username as string;
+
+  return useQuery([{ scope: 'profile', username }], getProfile, { staleTime: Infinity });
+};
+
+const uploadFile = async ({ file, username }: { file: File; username: string }) => {
+  await supabase.storage.from('photos/avatars').upload(file.name, file);
+  const { publicURL } = supabase.storage.from('photos/avatars').getPublicUrl(file.name);
+  await supabase.from('profiles').update({ avatar_url: publicURL }).match({ username });
+};
+
+export const useUploadFileMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(uploadFile, {
+    onMutate: ({ file, username }) => {
+      const key = [{ scope: 'profile', username }];
+
+      const userLoggedData = queryClient.getQueryData<ProfileResponse>(key);
+
+      queryClient.setQueryData(key, () => ({
+        ...userLoggedData,
+        avatar_url: URL.createObjectURL(file),
+      }));
+
+      queryClient.setQueryData(['header_image'], () => ({
+        avatar_url: URL.createObjectURL(file),
+      }));
+    },
+  });
+};

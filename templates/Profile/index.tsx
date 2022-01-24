@@ -1,63 +1,29 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
 import { FollowDialog, FollowButton, UnfollowButton, Logo } from '@/components';
 
-import { getProfile, ProfileResponse } from './queries';
+import { useProfileQuery, useUploadFileMutation } from './queries';
 
 import * as S from './styles';
 
 export default function ProfileTemplate({ isFollowed: _isFollowed }: { isFollowed: boolean }) {
   const { user } = useUser();
-  const router = useRouter();
-  const username = router.query.username as string;
 
-  const queryClient = useQueryClient();
+  const profileQuery = useProfileQuery();
+  const uploadFileMutation = useUploadFileMutation();
 
   const [isFollowed, setIsFollowed] = React.useState(_isFollowed);
 
-  const profileQuery = useQuery([{ scope: 'profile', username }], getProfile, {
-    staleTime: Infinity,
-  });
-
   const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
 
-  const uploadFileMutation = useMutation(uploadFile, {
-    onSuccess: (_data, file) => {
-      const key = [{ scope: 'profile', username: user?.user_metadata.username }];
-
-      const userLoggedData = queryClient.getQueryData<ProfileResponse>(key);
-
-      queryClient.setQueryData(key, () => ({
-        ...userLoggedData,
-        avatar_url: URL.createObjectURL(file),
-      }));
-
-      queryClient.setQueryData(['header_image'], () => ({
-        avatar_url: URL.createObjectURL(file),
-      }));
-    },
-  });
-
-  async function uploadFile(file: File) {
-    await supabase.storage.from('photos/avatars').upload(file.name, file);
-    const { publicURL } = supabase.storage.from('photos/avatars').getPublicUrl(file.name);
-    await supabase
-      .from('profiles')
-      .update({ avatar_url: publicURL })
-      .match({ username: user?.user_metadata.username });
-  }
-
-  async function onFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0];
-    uploadFileMutation.mutate(file);
-  }
+    uploadFileMutation.mutate({ file, username: user?.user_metadata.username });
+  };
 
   if (!profileQuery.data) {
     return (
