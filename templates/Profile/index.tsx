@@ -11,13 +11,13 @@ import { useProfileQuery, useUploadFileMutation } from './queries';
 
 import * as S from './styles';
 
-const ProfileTemplate = ({ isFollowed: _isFollowed }: { isFollowed: boolean }) => {
+const ProfileTemplate = (props: { isFollowed: boolean }) => {
   const { user } = useUser();
 
   const profileQuery = useProfileQuery();
   const uploadFileMutation = useUploadFileMutation();
 
-  const [isFollowed, setIsFollowed] = React.useState(_isFollowed);
+  const [isFollowed, setIsFollowed] = React.useState(props.isFollowed);
 
   const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
 

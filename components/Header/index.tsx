@@ -56,7 +56,7 @@ export default function Header() {
           <Logo />
           <S.NavList>
             <li>
-              <Link href="/" passHref>
+              <Link href="/">
                 <a>
                   <HiOutlineHome size={24} color="#1B1B18" />
                 </a>
