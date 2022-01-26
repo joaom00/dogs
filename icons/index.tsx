@@ -5,4 +5,5 @@ export {
   FiMessageCircle as ChatIcon,
   FiCamera as CameraIcon,
   FiUserCheck as UserIcon,
+  FiHome as HomeIcon,
 } from 'react-icons/fi';

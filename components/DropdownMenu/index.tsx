@@ -12,7 +12,7 @@ const DropdownMenuTrigger = (props: DropdownMenuPrimitive.DropdownMenuTriggerPro
 
 const DropdownMenuContent = (props: DropdownMenuPrimitive.DropdownMenuContentProps) => {
   return (
-    <S.DropdownMenuContent>
+    <S.DropdownMenuContent {...props}>
       {props.children}
       <S.DropdownMenuArrow />
     </S.DropdownMenuContent>

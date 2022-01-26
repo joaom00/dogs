@@ -1,8 +1,7 @@
 import React from 'react';
 import { useMutation, useQueryClient } from 'react-query';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
-import { DialogProps, Portal, Root } from '@radix-ui/react-dialog';
-import toast from 'react-hot-toast';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
@@ -17,7 +16,7 @@ type FormValues = {
   files: Array<File>;
 };
 
-const AddPostDialog = (props: DialogProps) => {
+const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const methods = useForm<FormValues>({ shouldUnregister: true });
@@ -50,8 +49,10 @@ const AddPostDialog = (props: DialogProps) => {
   };
 
   return (
-    <Root open={props.open} onOpenChange={props.onOpenChange} {...props}>
-      <Portal>
+    <DialogPrimitive.Root {...props}>
+      <DialogPrimitive.Trigger asChild>{props.children}</DialogPrimitive.Trigger>
+
+      <DialogPrimitive.Portal>
         <S.DialogOverlay>
           <S.DialogContent asChild>
             <form onSubmit={methods.handleSubmit(onSubmit)}>
@@ -79,12 +80,13 @@ const AddPostDialog = (props: DialogProps) => {
               </S.DialogContentMain>
             </form>
           </S.DialogContent>
+
           <S.DialogClose>
             <CloseIcon size={26} />
           </S.DialogClose>
         </S.DialogOverlay>
-      </Portal>
-    </Root>
+      </DialogPrimitive.Portal>
+    </DialogPrimitive.Root>
   );
 };
 

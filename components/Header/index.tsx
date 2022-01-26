@@ -3,22 +3,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
-import { HiOutlineHome } from 'react-icons/hi';
 
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
+import { HomeIcon } from '@/icons';
 import { Logo, AddPostDialog, DropdownMenu } from '@/components';
 
 import * as S from './styles';
 
-export default function Header() {
-  const [openDropdown, setOpenDropdown] = React.useState(false);
-  const [openNewPostDialog, setOpenNewPostDialog] = React.useState(false);
-
+const Header = () => {
   const { user } = useUser();
 
   const router = useRouter();
+
+  const [openDropdown, setOpenDropdown] = React.useState(false);
+  const [isAddPostOpen, setIsAddPostOpen] = React.useState(false);
 
   const { data } = useQuery(
     ['header_image'],
@@ -35,18 +35,12 @@ export default function Header() {
     }
   );
 
-  async function handleSignOut() {
+  const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push('/login');
-  }
+  };
 
-  function onDropdownClose() {
-    setOpenDropdown(false);
-  }
-
-  function onPostDialogOpen() {
-    setOpenNewPostDialog(true);
-  }
+  const onDropdownClose = () => setOpenDropdown(false);
 
   return (
     <>
@@ -57,7 +51,7 @@ export default function Header() {
             <li>
               <Link href="/">
                 <a>
-                  <HiOutlineHome size={24} color="#1B1B18" />
+                  <HomeIcon size={24} color="#1B1B18" />
                 </a>
               </Link>
             </li>
@@ -77,16 +71,19 @@ export default function Header() {
                     />
                   </DropdownMenu.Trigger>
 
-                  <DropdownMenu.Content sideOffset={5}>
+                  <DropdownMenu.Content sideOffset={5} hidden={isAddPostOpen}>
                     <Link href={`/${user?.user_metadata.username}`} passHref>
                       <DropdownMenu.Item asChild>
                         <a onClick={onDropdownClose}>Perfil</a>
                       </DropdownMenu.Item>
                     </Link>
 
-                    <DropdownMenu.Item asChild>
-                      <button onClick={onPostDialogOpen}>Nova foto</button>
-                    </DropdownMenu.Item>
+                    <AddPostDialog open={isAddPostOpen} onOpenChange={setIsAddPostOpen}>
+                      <DropdownMenu.Item onSelect={(event) => event.preventDefault()}>
+                        Nova foto
+                        {/* <button onClick={onPostDialogOpen}>Nova foto</button> */}
+                      </DropdownMenu.Item>
+                    </AddPostDialog>
 
                     <Link href="/conta/editar" passHref>
                       <DropdownMenu.Item asChild>
@@ -106,7 +103,8 @@ export default function Header() {
           </S.NavList>
         </S.Container>
       </S.Wrapper>
-      <AddPostDialog open={openNewPostDialog} onOpenChange={setOpenNewPostDialog} />
     </>
   );
-}
+};
+
+export default Header;
