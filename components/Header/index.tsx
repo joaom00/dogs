@@ -8,8 +8,7 @@ import { HiOutlineHome } from 'react-icons/hi';
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
-import Logo from '@/components/Logo';
-import AddPostDialog from '@/components/AddPostDialog';
+import { Logo, AddPostDialog, DropdownMenu } from '@/components';
 
 import * as S from './styles';
 
@@ -64,8 +63,8 @@ export default function Header() {
             </li>
             {user && (
               <li>
-                <S.DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
-                  <S.DropdownMenuTrigger>
+                <DropdownMenu.Root open={openDropdown} onOpenChange={setOpenDropdown}>
+                  <DropdownMenu.Trigger>
                     <Image
                       src={
                         data?.avatar_url ||
@@ -76,34 +75,32 @@ export default function Header() {
                       objectFit="cover"
                       alt="foto"
                     />
-                  </S.DropdownMenuTrigger>
+                  </DropdownMenu.Trigger>
 
-                  <S.DropdownMenuContent sideOffset={5}>
+                  <DropdownMenu.Content sideOffset={5}>
                     <Link href={`/${user?.user_metadata.username}`} passHref>
-                      <S.DropdownMenuItem asChild>
+                      <DropdownMenu.Item asChild>
                         <a onClick={onDropdownClose}>Perfil</a>
-                      </S.DropdownMenuItem>
+                      </DropdownMenu.Item>
                     </Link>
 
-                    <S.DropdownMenuItem asChild>
+                    <DropdownMenu.Item asChild>
                       <button onClick={onPostDialogOpen}>Nova foto</button>
-                    </S.DropdownMenuItem>
+                    </DropdownMenu.Item>
 
                     <Link href="/conta/editar" passHref>
-                      <S.DropdownMenuItem asChild>
+                      <DropdownMenu.Item asChild>
                         <a onClick={onDropdownClose}>Configurações</a>
-                      </S.DropdownMenuItem>
+                      </DropdownMenu.Item>
                     </Link>
 
-                    <S.DropdownMenuSeparator />
+                    <DropdownMenu.Separator />
 
-                    <S.DropdownMenuItem asChild>
+                    <DropdownMenu.Item asChild>
                       <button onClick={handleSignOut}>Sair</button>
-                    </S.DropdownMenuItem>
-
-                    <S.DropdownMenuArrow />
-                  </S.DropdownMenuContent>
-                </S.DropdownMenu>
+                    </DropdownMenu.Item>
+                  </DropdownMenu.Content>
+                </DropdownMenu.Root>
               </li>
             )}
           </S.NavList>
