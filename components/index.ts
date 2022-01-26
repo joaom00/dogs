@@ -8,3 +8,4 @@ export { default as Spinner } from './Spinner';
 export { default as FollowButton } from './FollowButton';
 export { default as UnfollowButton } from './UnfollowButton';
 export { default as FollowDialog } from './FollowDialog';
+export { default as FileInput } from './FileInput';

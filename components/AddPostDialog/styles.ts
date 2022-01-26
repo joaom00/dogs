@@ -48,6 +48,10 @@ export const SendButton = styled.button`
     margin-left: auto;
     margin-right: ${theme.space.sm};
     color: ${theme.colors.yellow11};
+
+    display: flex;
+    align-items: center;
+    gap: ${theme.space.xs};
   `}
 `;
 

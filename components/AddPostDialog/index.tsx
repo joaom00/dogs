@@ -1,40 +1,52 @@
 import React from 'react';
-import { DialogProps, Portal, Root } from '@radix-ui/react-dialog';
-
-import { CloseIcon } from '@/icons';
-
-import * as S from './styles';
+import { useMutation, useQueryClient } from 'react-query';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
-import FileInput from '../FileInput';
+import { DialogProps, Portal, Root } from '@radix-ui/react-dialog';
+import toast from 'react-hot-toast';
+
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
-import toast from 'react-hot-toast';
+
+import { CloseIcon } from '@/icons';
+import { FileInput, Spinner } from '@/components';
+
+import * as S from './styles';
 
 type FormValues = {
   description: string;
   files: Array<File>;
 };
 
-export default function NewPostDialog(props: DialogProps) {
+const AddPostDialog = (props: DialogProps) => {
   const { user } = useUser();
+  const queryClient = useQueryClient();
   const methods = useForm<FormValues>({ shouldUnregister: true });
 
-  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+  const createPost = async (data: FormValues) => {
     const file = data.files[0];
-    toast.promise(
-      (async () => {
-        await supabase.storage.from('photos').upload(file.name, file);
-        const { publicURL } = supabase.storage.from('photos').getPublicUrl(file.name);
-        await supabase
-          .from('posts')
-          .insert([{ image_url: publicURL, description: data.description, user_id: user?.id }]);
-      })(),
-      {
-        loading: 'Criando publicação',
-        success: 'Publicação criada!',
-        error: 'Algo deu errado',
-      }
-    );
+    const dateTime = new Date().getTime();
+    const fileName = `${dateTime}-${user?.id}-${file.name}`;
+
+    await supabase.storage.from('photos').upload(fileName, file);
+
+    const { publicURL } = supabase.storage.from('photos').getPublicUrl(fileName);
+
+    await supabase
+      .from('posts')
+      .insert([{ image_url: publicURL, description: data.description, user_id: user?.id }]);
+  };
+
+  const createPostMutation = useMutation(createPost, {
+    onSuccess: () =>
+      queryClient.invalidateQueries([{ scope: 'profile', username: user?.user_metadata.username }]),
+  });
+
+  const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    createPostMutation.mutate(data, {
+      onSuccess: () => {
+        props.onOpenChange!(false);
+      },
+    });
   };
 
   return (
@@ -45,8 +57,13 @@ export default function NewPostDialog(props: DialogProps) {
             <form onSubmit={methods.handleSubmit(onSubmit)}>
               <S.DialogTitleWrapper>
                 <S.DialogTitle>Criar nova publicação</S.DialogTitle>
-                <S.SendButton type="submit">Compartilhar</S.SendButton>
+
+                <S.SendButton type="submit" disabled={createPostMutation.isLoading}>
+                  {createPostMutation.isLoading && <Spinner />}
+                  Compartilhar
+                </S.SendButton>
               </S.DialogTitleWrapper>
+
               <S.DialogContentMain>
                 <FormProvider {...methods}>
                   <FileInput accept="image/png, image/jpg, image/jpeg" name="files" />
@@ -69,4 +86,6 @@ export default function NewPostDialog(props: DialogProps) {
       </Portal>
     </Root>
   );
-}
+};
+
+export default AddPostDialog;
