@@ -8,7 +8,11 @@ type CustomKeys = Array<{
   username: string;
 }>;
 
-type ProfileResponse = {
+/* -------------------------------------------------------------------------------------------------
+ * useProfileQuery
+ * -----------------------------------------------------------------------------------------------*/
+
+export type ProfileResponse = {
   name: string;
   username: string;
   avatar_url: string;
@@ -16,24 +20,19 @@ type ProfileResponse = {
   postsCount: Array<{ count: number }>;
   followersCount: Array<{ count: number }>;
   followingCount: Array<{ count: number }>;
-  posts: Array<{
-    id: string;
-    image_url: string;
-    comments: Array<{ count: number }>;
-    likes: Array<{ count: number }>;
-  }>;
 };
 
 export const getProfile = async ({
-  queryKey: [{ username }],
+  queryKey,
 }: QueryFunctionContext<CustomKeys>): Promise<ProfileResponse> => {
+  const [{ username }] = queryKey;
+
   const res = await supabase
     .from('profiles')
     .select(
-      'name, username, bio, avatar_url, postsCount:posts!user_id(count), followersCount:follows!followed_username(count), followingCount:follows!follower_username(count), posts:posts!user_id(id, image_url, comments:comments(count), likes:likes(count))'
+      'name, username, bio, avatar_url, postsCount:posts!user_username(count), followersCount:follows!followed_username(count), followingCount:follows!follower_username(count)'
     )
     .eq('username', username)
-    .order('created_at', { foreignTable: 'posts.created_at', ascending: false })
     .single();
 
   return res.data;
@@ -43,8 +42,48 @@ export const useProfileQuery = () => {
   const router = useRouter();
   const username = router.query.username as string;
 
-  return useQuery([{ scope: 'profile', username }], getProfile, { staleTime: Infinity });
+  return useQuery([{ scope: 'profile', type: 'detail', username }], getProfile, {
+    staleTime: Infinity,
+  });
 };
+
+/* -------------------------------------------------------------------------------------------------
+ * useUserPosts
+ * -----------------------------------------------------------------------------------------------*/
+
+type UserPostsResponse = Array<{
+  id: number;
+  image_url: string;
+  commentsCount: Array<{ count: number }>;
+  likesCount: Array<{ count: number }>;
+}>;
+
+export const getUserPosts = async ({
+  queryKey,
+}: QueryFunctionContext<CustomKeys>): Promise<UserPostsResponse | null> => {
+  const [{ username }] = queryKey;
+
+  const res = await supabase
+    .from('posts')
+    .select('id, image_url, commentsCount:comments(count), likesCount:likes(count))')
+    .eq('user_username', username)
+    .order('created_at', { ascending: false });
+
+  return res.data;
+};
+
+export const useUserPosts = () => {
+  const router = useRouter();
+  const username = router.query.username as string;
+
+  return useQuery([{ scope: 'profile', type: 'posts', username }], getUserPosts, {
+    staleTime: Infinity,
+  });
+};
+
+/* -------------------------------------------------------------------------------------------------
+ * useUploadFileMutation
+ * -----------------------------------------------------------------------------------------------*/
 
 const uploadFile = async ({ file, username }: { file: File; username: string }) => {
   await supabase.storage.from(`avatars`).upload(`${username}-${file.name}`, file);

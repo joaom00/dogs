@@ -5,9 +5,9 @@ import toast from 'react-hot-toast';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
-import { FollowDialog, FollowButton, UnfollowButton, Logo } from '@/components';
+import { FollowDialog, FollowButton, UnfollowButton, Logo, PostDialog } from '@/components';
 
-import { useProfileQuery, useUploadFileMutation } from './queries';
+import { useProfileQuery, useUploadFileMutation, useUserPosts } from './queries';
 
 import * as S from './styles';
 
@@ -15,6 +15,7 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
   const { user } = useUser();
 
   const profileQuery = useProfileQuery();
+  const postsQuery = useUserPosts();
   const uploadFileMutation = useUploadFileMutation();
 
   const [isFollowed, setIsFollowed] = React.useState(props.isFollowed);
@@ -100,7 +101,7 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
       </S.ProfileWrapper>
 
       <S.Feed>
-        {!profileQuery.data.posts.length && (
+        {!postsQuery.data?.length && (
           <S.NoPosts>
             {isUserLoggedProfile ? (
               <>
@@ -116,20 +117,22 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
           </S.NoPosts>
         )}
 
-        {profileQuery.data.posts.map((post) => (
-          <li key={post.id}>
-            <S.Overlay>
-              <span>
-                <ChatIcon size={24} />
-                {post.comments[0].count}
-              </span>
-              <span>
-                <HeartIcon size={24} />
-                {post.likes[0].count}
-              </span>
-            </S.Overlay>
-            <img src={post.image_url} alt={`Foto de ${profileQuery.data.username}`} />
-          </li>
+        {postsQuery.data?.map((post) => (
+          <PostDialog key={post.id} postId={post.id}>
+            <li>
+              <S.Overlay>
+                <span>
+                  <ChatIcon size={24} />
+                  {post.commentsCount[0].count}
+                </span>
+                <span>
+                  <HeartIcon size={24} />
+                  {post.likesCount[0].count}
+                </span>
+              </S.Overlay>
+              <img src={post.image_url} alt={`Foto de ${profileQuery.data.username}`} />
+            </li>
+          </PostDialog>
         ))}
       </S.Feed>
     </>

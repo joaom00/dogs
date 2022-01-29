@@ -30,14 +30,20 @@ const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
 
     const { publicURL } = supabase.storage.from('photos').getPublicUrl(fileName);
 
-    await supabase
-      .from('posts')
-      .insert([{ image_url: publicURL, description: data.description, user_id: user?.id }]);
+    await supabase.from('posts').insert([
+      {
+        image_url: publicURL,
+        description: data.description,
+        user_username: user?.user_metadata.username,
+      },
+    ]);
   };
 
   const createPostMutation = useMutation(createPost, {
     onSuccess: () =>
-      queryClient.invalidateQueries([{ scope: 'profile', username: user?.user_metadata.username }]),
+      queryClient.invalidateQueries([
+        { scope: 'profile', type: 'posts', username: user?.user_metadata.username },
+      ]),
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {

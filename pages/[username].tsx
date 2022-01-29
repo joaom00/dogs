@@ -4,9 +4,9 @@ import { dehydrate, QueryClient } from 'react-query';
 import { supabase } from '@/lib/supabase';
 
 import ProfileTemplate from '@/templates/Profile';
-import { getProfile } from '@/templates/Profile/queries';
+import { getProfile, getUserPosts } from '@/templates/Profile/queries';
 
-export default function Profile({ isFollowed }: { isFollowed: boolean }) {
+export default function ProfilePage({ isFollowed }: { isFollowed: boolean }) {
   return <ProfileTemplate isFollowed={isFollowed} />;
 }
 
@@ -15,7 +15,9 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const username = query.username as string;
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([{ scope: 'profile', username }], getProfile);
+
+  await queryClient.prefetchQuery([{ scope: 'profile', type: 'detail', username }], getProfile);
+  await queryClient.prefetchQuery([{ scope: 'profile', type: 'posts', username }], getUserPosts);
 
   const { user } = await supabase.auth.api.getUserByCookie(ctx.req);
   const res = await supabase

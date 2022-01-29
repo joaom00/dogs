@@ -29,7 +29,7 @@ export default function UnfollowButton({ onFollowChange }: UnfollowButtonProps) 
   const followMutation = useMutation(followDelete, {
     onSuccess: () => {
       queryClient.invalidateQueries([{ scope: 'followers', username }]);
-      queryClient.invalidateQueries([{ scope: 'profile', username }]);
+      queryClient.invalidateQueries([{ scope: 'profile', type: 'detail', username }]);
       onFollowChange(false);
     },
   });

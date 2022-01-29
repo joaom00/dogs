@@ -21,7 +21,7 @@ export default function FollowButton({ onFollowChange }: FollowButtonProps) {
   const followMutation = useMutation(followPost, {
     onSuccess: () => {
       queryClient.invalidateQueries([{ scope: 'followers', username }]);
-      queryClient.invalidateQueries([{ scope: 'profile', username }]);
+      queryClient.invalidateQueries([{ scope: 'profile', type: 'detail', username }]);
       onFollowChange(true);
     },
   });
