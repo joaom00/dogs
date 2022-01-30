@@ -1,3 +1,4 @@
+import React from 'react';
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 
 import * as S from './styles';
@@ -6,26 +7,46 @@ const DropdownMenu = (props: DropdownMenuPrimitive.DropdownMenuProps) => {
   return <DropdownMenuPrimitive.Root {...props} />;
 };
 
-const DropdownMenuTrigger = (props: DropdownMenuPrimitive.DropdownMenuTriggerProps) => {
-  return <S.DropdownMenuTrigger {...props} />;
-};
+const DropdownMenuTrigger = React.forwardRef<
+  HTMLButtonElement,
+  DropdownMenuPrimitive.DropdownMenuTriggerProps
+>((props, forwardedRef) => {
+  return <S.DropdownMenuTrigger {...props} ref={forwardedRef} />;
+});
 
-const DropdownMenuContent = (props: DropdownMenuPrimitive.DropdownMenuContentProps) => {
+DropdownMenuTrigger.displayName = 'DropdownMenuTrigger';
+
+const DropdownMenuContent = React.forwardRef<
+  HTMLDivElement,
+  DropdownMenuPrimitive.DropdownMenuContentProps
+>((props, forwardedRef) => {
   return (
-    <S.DropdownMenuContent {...props}>
+    <S.DropdownMenuContent {...props} ref={forwardedRef}>
       {props.children}
       <S.DropdownMenuArrow />
     </S.DropdownMenuContent>
   );
-};
+});
 
-const DropdownMenuItem = (props: DropdownMenuPrimitive.DropdownMenuItemProps) => {
-  return <S.DropdownMenuItem {...props} />;
-};
+DropdownMenuContent.displayName = 'DropdownMenuContent';
 
-const DropdownMenuSeparator = (props: DropdownMenuPrimitive.DropdownMenuSeparatorProps) => {
-  return <S.DropdownMenuSeparator {...props} />;
-};
+const DropdownMenuItem = React.forwardRef<
+  HTMLDivElement,
+  DropdownMenuPrimitive.DropdownMenuItemProps
+>((props, forwardedRef) => {
+  return <S.DropdownMenuItem {...props} ref={forwardedRef} />;
+});
+
+DropdownMenuItem.displayName = 'DropdownMenuItem';
+
+const DropdownMenuSeparator = React.forwardRef<
+  HTMLDivElement,
+  DropdownMenuPrimitive.DropdownMenuSeparatorProps
+>((props, forwardedRef) => {
+  return <S.DropdownMenuSeparator {...props} ref={forwardedRef} />;
+});
+
+DropdownMenuSeparator.displayName = 'DropdownMenuSeparator';
 
 export {
   DropdownMenu as Root,
