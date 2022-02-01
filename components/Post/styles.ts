@@ -14,7 +14,7 @@ export const PostHeader = styled.header`
   ${({ theme }) => css`
     display: flex;
     align-items: center;
-    gap: ${theme.space.xs};
+    gap: ${theme.space.sm};
     padding: ${theme.space.xs};
 
     img {
