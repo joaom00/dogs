@@ -1,3 +1,4 @@
+import { useUser } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { QueryFunctionContext, useMutation, useQuery, useQueryClient } from 'react-query';
 
@@ -5,13 +6,14 @@ type CustomKeys = Array<{
   scope: string;
   type: string;
   postId: number;
+  userId?: string;
 }>;
 
 /* -------------------------------------------------------------------------------------------------
  * usePostDetailQuery
  * -----------------------------------------------------------------------------------------------*/
 
-type PostDetailResponse = {
+export type PostDetailResponse = {
   id: number;
   image_url: string;
   description: string;
@@ -25,10 +27,8 @@ type PostDetailResponse = {
   };
 };
 
-const getPostDetail = async ({ queryKey }: QueryFunctionContext<CustomKeys>) => {
-  const [{ postId }] = queryKey;
-
-  const res = await supabase
+const getPostDetail = async ({ postId, userId }: { postId: number; userId: string }) => {
+  const postResponse = await supabase
     .from<PostDetailResponse>('posts')
     .select(
       'id, image_url, description, created_at, likesCount:likes(count), user:user_username(id, username, avatar_url)'
@@ -36,21 +36,28 @@ const getPostDetail = async ({ queryKey }: QueryFunctionContext<CustomKeys>) => 
     .eq('id', postId)
     .single();
 
-  const like = await supabase
+  const likeResponse = await supabase
     .from('likes')
     .select('*', { count: 'exact' })
-    .match({ post_id: postId, user_id: res.data?.user.id });
+    .match({ post_id: postId, user_id: userId });
 
   return {
-    ...res.data,
-    hasLiked: !!like.count,
+    ...postResponse.data,
+    hasLiked: !!likeResponse.count,
   };
 };
 
 export const usePostDetailQuery = (postId: number, open: boolean) => {
-  return useQuery([{ scope: 'post', type: 'detail', postId }], getPostDetail, {
-    enabled: open,
-  });
+  const { user } = useUser();
+  const userId = user?.id as string;
+
+  return useQuery(
+    [{ scope: 'post', type: 'detail', postId }],
+    () => getPostDetail({ postId, userId }),
+    {
+      enabled: open,
+    }
+  );
 };
 
 /* -------------------------------------------------------------------------------------------------

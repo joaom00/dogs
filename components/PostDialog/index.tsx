@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import ReactTimeAgo from 'react-time-ago';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
@@ -10,9 +11,9 @@ import { Spinner } from '@/components';
 
 import {
   useCommentMutation,
-  useLikeMutation,
   usePostCommentsQuery,
   usePostDetailQuery,
+  useLikeMutation,
   useUnlikeMutation,
 } from './queries';
 
@@ -20,15 +21,17 @@ import * as S from './styles';
 
 type PostDialogProps = {
   postId: number;
-};
+  returnHref?: string;
+} & DialogPrimitive.DialogProps;
 
-const PostDialog: React.FC<PostDialogProps> = ({ children, postId }) => {
+const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, ...props }) => {
   const { user } = useUser();
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState('');
 
-  const postQuery = usePostDetailQuery(postId, open);
-  const commentsQuery = usePostCommentsQuery(postId, open);
+  const postQuery = usePostDetailQuery(postId, props.open ?? open);
+  const commentsQuery = usePostCommentsQuery(postId, props.open ?? open);
   const commentMutation = useCommentMutation();
 
   const onSubmit = (event: React.FormEvent) => {
@@ -47,12 +50,14 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId }) => {
   };
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={setOpen}>
+    <DialogPrimitive.Root open={open} onOpenChange={setOpen} {...props}>
       <DialogPrimitive.Trigger asChild>{children}</DialogPrimitive.Trigger>
 
       <DialogPrimitive.Portal>
         <S.DialogOverlay>
-          <S.DialogContent>
+          <S.DialogContent
+            onCloseAutoFocus={() => router.push(returnHref ?? '', undefined, { shallow: true })}
+          >
             <S.PostImage>
               {postQuery.data?.image_url && (
                 <img

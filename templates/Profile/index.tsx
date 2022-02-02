@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
 import { useUser } from '@/context/AuthContext';
@@ -13,6 +14,8 @@ import * as S from './styles';
 
 const ProfileTemplate = (props: { isFollowed: boolean }) => {
   const { user } = useUser();
+  const router = useRouter();
+  const returnHref = React.useRef(router.asPath);
 
   const profileQuery = useProfileQuery();
   const postsQuery = useUserPosts();
@@ -118,21 +121,30 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
         )}
 
         {postsQuery.data?.map((post) => (
-          <PostDialog key={post.id} postId={post.id}>
-            <li>
-              <S.Overlay>
-                <span>
-                  <ChatIcon size={24} />
-                  {post.commentsCount[0].count}
-                </span>
-                <span>
-                  <HeartIcon size={24} />
-                  {post.likesCount[0].count}
-                </span>
-              </S.Overlay>
-              <img src={post.image_url} alt={`Foto de ${profileQuery.data.username}`} />
-            </li>
-          </PostDialog>
+          <Link
+            key={post.id}
+            href={`${router.pathname}?username=${profileQuery.data.username}`}
+            as={`/p/${post.id}`}
+            shallow
+          >
+            <a>
+              <PostDialog postId={post.id} returnHref={returnHref.current}>
+                <li>
+                  <S.Overlay>
+                    <span>
+                      <ChatIcon size={24} />
+                      {post.commentsCount[0].count}
+                    </span>
+                    <span>
+                      <HeartIcon size={24} />
+                      {post.likesCount[0].count}
+                    </span>
+                  </S.Overlay>
+                  <img src={post.image_url} alt={`Foto de ${profileQuery.data.username}`} />
+                </li>
+              </PostDialog>
+            </a>
+          </Link>
         ))}
       </S.Feed>
     </>

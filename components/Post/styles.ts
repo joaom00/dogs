@@ -81,6 +81,8 @@ export const PostShowAllComments = styled.button`
 
 export const PostCreatedInfo = styled.span`
   ${({ theme }) => css`
+    display: block;
+    margin-top: ${theme.space.xs};
     color: ${theme.colors.sand11};
     font-size: ${theme.font.sizes.xsmall};
     padding-left: ${theme.space.sm};

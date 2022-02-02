@@ -8,7 +8,7 @@ const Home = () => {
   const postsQuery = usePostsQuery();
 
   if (!postsQuery.data) {
-    return <p>nao tem posts</p>;
+    return <p>Slide</p>;
   }
 
   return (
