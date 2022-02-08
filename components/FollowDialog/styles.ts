@@ -40,3 +40,10 @@ export const NoFollow = styled.p`
   text-align: center;
   margin-top: 2.4rem;
 `;
+
+export const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 3.2rem;
+`;

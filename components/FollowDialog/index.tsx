@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase';
 import { Dialog } from '@/components';
 
 import * as S from './styles';
+import Spinner from '../Spinner';
 
 type FollowResponse = Array<{
   follow: {
@@ -51,7 +52,13 @@ const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
       <Dialog.Content>
         <Dialog.Title>{type === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
 
-        {!followQuery.data?.length && (
+        {followQuery.isLoading && (
+          <S.SpinnerWrapper>
+            <Spinner />
+          </S.SpinnerWrapper>
+        )}
+
+        {followQuery.data?.length === 0 && (
           <S.NoFollow>
             {type === 'followers'
               ? 'Você não possui nenhum seguidor'
