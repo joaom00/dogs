@@ -123,6 +123,7 @@ export const PostContentComments = styled.div`
   max-height: 425px;
 
   scrollbar-width: none;
+
   ::-webkit-scrollbar {
     display: none;
   }

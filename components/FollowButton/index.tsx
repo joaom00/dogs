@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 
@@ -8,13 +7,12 @@ import { useUser } from '@/context/AuthContext';
 import { Button, Spinner } from '@/components';
 
 type FollowButtonProps = {
+  username: string;
   onFollowChange: (followed: boolean) => void;
 };
 
-export default function FollowButton({ onFollowChange }: FollowButtonProps) {
+export default function FollowButton({ username, onFollowChange }: FollowButtonProps) {
   const { user } = useUser();
-  const router = useRouter();
-  const username = router.query.username;
 
   const queryClient = useQueryClient();
 

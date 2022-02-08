@@ -1,4 +1,4 @@
-import Post from '@/components/Post';
+import { Post, Spinner, Suggestions } from '@/components';
 
 import { usePostsQuery } from './queries';
 
@@ -7,8 +7,16 @@ import * as S from './styles';
 const Home = () => {
   const postsQuery = usePostsQuery();
 
-  if (!postsQuery.data) {
-    return <p>Slide</p>;
+  if (postsQuery.isLoading) {
+    return (
+      <S.SpinnerWrapper>
+        <Spinner width={24} height={24} />
+      </S.SpinnerWrapper>
+    );
+  }
+
+  if (!postsQuery.data?.length) {
+    return <Suggestions />;
   }
 
   return (

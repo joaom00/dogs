@@ -36,16 +36,6 @@ export const FollowName = styled.p`
   `}
 `;
 
-export const FollowAction = styled.button`
-  ${({ theme }) => css`
-    font-size: ${theme.font.sizes.small};
-    border: 1px solid ${theme.colors.sand6};
-    color: ${theme.colors.sand12};
-    border-radius: ${theme.radii.base};
-    height: 100%;
-  `}
-`;
-
 export const NoFollow = styled.p`
   text-align: center;
   margin-top: 2.4rem;

@@ -1,8 +1,19 @@
 import * as S from './styles';
 
-export default function Ring() {
+type SpinnerProps = {
+  width?: number;
+  height?: number;
+};
+
+export default function Spinner({ width = 14, height = 14 }: SpinnerProps) {
   return (
-    <S.Wrapper xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <S.Wrapper
+      width={width}
+      height={height}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+    >
       <circle
         style={{ opacity: '0.25' }}
         cx="12"

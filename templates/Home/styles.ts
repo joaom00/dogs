@@ -9,3 +9,11 @@ export const Wrapper = styled.ul`
     }
   `}
 `;
+
+export const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding-top: 72px;
+`;

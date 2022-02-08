@@ -74,7 +74,6 @@ const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
               </Link>
               <S.FollowName>{follow.name}</S.FollowName>
             </div>
-            <S.FollowAction>Remover</S.FollowAction>
           </S.FollowWrapper>
         ))}
       </Dialog.Content>

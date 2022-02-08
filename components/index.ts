@@ -11,5 +11,6 @@ export { default as FollowDialog } from './FollowDialog';
 export { default as FileInput } from './FileInput';
 export { default as AddPostDialog } from './AddPostDialog';
 export { default as PostDialog } from './PostDialog';
+export { default as Suggestions } from './Suggestions';
 
 export * as DropdownMenu from './DropdownMenu';

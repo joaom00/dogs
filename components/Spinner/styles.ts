@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components';
 
 export const Wrapper = styled.svg`
-  ${({ theme }) => css`
-    width: 14px;
-    height: 14px;
+  ${({ theme, width, height }) => css`
+    width: ${width}px;
+    height: ${height}px;
     color: ${theme.colors.yellow12};
 
     @keyframes spin {

@@ -15,6 +15,7 @@ import * as S from './styles';
 const ProfileTemplate = (props: { isFollowed: boolean }) => {
   const { user } = useUser();
   const router = useRouter();
+  const username = router.query.username as string;
   const returnHref = React.useRef(router.asPath);
 
   const profileQuery = useProfileQuery();
@@ -74,9 +75,9 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
           {!!user &&
             (!isUserLoggedProfile ? (
               isFollowed ? (
-                <UnfollowButton onFollowChange={setIsFollowed} />
+                <UnfollowButton username={username} onFollowChange={setIsFollowed} />
               ) : (
-                <FollowButton onFollowChange={setIsFollowed} />
+                <FollowButton username={username} onFollowChange={setIsFollowed} />
               )
             ) : null)}
         </S.ProfileInfo>

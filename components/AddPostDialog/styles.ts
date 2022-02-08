@@ -6,6 +6,20 @@ export const DialogOverlay = styled(Overlay)`
   background-color: rgba(0, 0, 0, 0.85);
   position: fixed;
   inset: 0;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: overlayShow 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes overlayShow {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 100;
+    }
+  }
 `;
 
 export const DialogTrigger = styled(Trigger)`
@@ -68,6 +82,22 @@ export const DialogContent = styled(Content)`
 
   display: flex;
   flex-direction: column;
+
+  @media (prefers-reduced-motion: no-preference) {
+    animation: contentShow 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes contentShow {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -48%) scale(0.96);
+    }
+
+    100% {
+      opacity: 100;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
 `;
 
 export const DialogContentMain = styled.div`

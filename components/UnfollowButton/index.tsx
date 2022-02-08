@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import { useMutation, useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
@@ -14,17 +13,18 @@ import { Button, Spinner } from '@/components';
 import * as S from './styles';
 
 type UnfollowButtonProps = {
+  username: string;
   onFollowChange: (followed: boolean) => void;
 };
 
-export default function UnfollowButton({ onFollowChange }: UnfollowButtonProps) {
+export default function UnfollowButton({ username, onFollowChange }: UnfollowButtonProps) {
   const { user } = useUser();
-  const router = useRouter();
-  const username = router.query.username;
 
   const queryClient = useQueryClient();
 
-  const userProfile = queryClient.getQueryData<ProfileResponse>([{ scope: 'profile', username }]);
+  const userProfile = queryClient.getQueryData<ProfileResponse>([
+    { scope: 'profile', type: 'detail', username },
+  ]);
 
   const followMutation = useMutation(followDelete, {
     onSuccess: () => {
@@ -41,8 +41,7 @@ export default function UnfollowButton({ onFollowChange }: UnfollowButtonProps) 
     });
 
     if (error) {
-      toast.error('Algo deu errado, tente novamente mais tarde');
-      return;
+      return toast.error('Algo deu errado, tente novamente mais tarde');
     }
   }
 
@@ -53,7 +52,12 @@ export default function UnfollowButton({ onFollowChange }: UnfollowButtonProps) 
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger asChild>
-        <Button size="medium" variant="secondary" disabled={followMutation.isLoading}>
+        <Button
+          aria-label={`deixar de seguir ${username}`}
+          size="medium"
+          variant="secondary"
+          disabled={followMutation.isLoading}
+        >
           {followMutation.isLoading && <Spinner />}
           <UserIcon size={16} />
         </Button>
