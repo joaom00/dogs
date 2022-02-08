@@ -10,7 +10,7 @@ const Home = () => {
   if (postsQuery.isLoading) {
     return (
       <S.SpinnerWrapper>
-        <Spinner width={24} height={24} />
+        <Spinner size={24} />
       </S.SpinnerWrapper>
     );
   }

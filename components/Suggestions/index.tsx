@@ -18,7 +18,7 @@ const Suggestions = () => {
       <S.UserList>
         {usersQuery.isLoading && (
           <S.SpinnerWrapper>
-            <Spinner width={18} height={18} />
+            <Spinner size={18} />
           </S.SpinnerWrapper>
         )}
 
