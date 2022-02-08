@@ -51,7 +51,7 @@ export const getPosts = async (userId: string, username: string): Promise<PostRe
   return postsResponse.data;
 };
 
-export const usePostsQuery = () => {
+export const usePosts = () => {
   const { user } = useUser();
 
   return useQuery([{ scope: 'posts', type: 'feed' }], () =>

@@ -6,6 +6,7 @@ import { FollowButton, UnfollowButton } from '@/components';
 import { useUsersQuery } from './queries';
 
 import * as S from './styles';
+import Spinner from '../Spinner';
 
 const Suggestions = () => {
   const usersQuery = useUsersQuery();
@@ -15,6 +16,12 @@ const Suggestions = () => {
       <h2>Algumas sugestões para você</h2>
 
       <S.UserList>
+        {usersQuery.isLoading && (
+          <S.SpinnerWrapper>
+            <Spinner width={18} height={18} />
+          </S.SpinnerWrapper>
+        )}
+
         {usersQuery.data?.map((user) => (
           <S.User key={user.id}>
             <Link href={user.username}>

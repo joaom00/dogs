@@ -1,11 +1,11 @@
 import { Post, Spinner, Suggestions } from '@/components';
 
-import { usePostsQuery } from './queries';
+import { usePosts } from './queries';
 
 import * as S from './styles';
 
 const Home = () => {
-  const postsQuery = usePostsQuery();
+  const postsQuery = usePosts();
 
   if (postsQuery.isLoading) {
     return (

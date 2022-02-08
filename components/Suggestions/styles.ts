@@ -15,6 +15,7 @@ export const UserList = styled.ul`
   ${({ theme }) => css`
     border: 1px solid ${theme.colors.sand6};
     max-width: 600px;
+    min-height: 500px;
     width: 100%;
     padding: ${theme.space.sm} ${theme.space.lg};
   `}
@@ -40,4 +41,12 @@ export const User = styled.li`
       margin-left: auto;
     }
   `}
+`;
+
+export const SpinnerWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 2.4rem;
 `;

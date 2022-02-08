@@ -12,7 +12,9 @@ export const getServerSideProps = async ({ req }: GetServerSidePropsContext) => 
   const { user } = await supabase.auth.api.getUserByCookie(req);
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([{ scope: 'profile', type: 'feed' }], getPosts);
+  await queryClient.prefetchQuery([{ scope: 'posts', type: 'feed' }], () =>
+    getPosts(user?.id as string, user?.user_metadata.username)
+  );
 
   if (!user) {
     return {
