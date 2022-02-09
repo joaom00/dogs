@@ -8,30 +8,34 @@ import { useUser } from '@/context/AuthContext';
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
 import { FollowDialog, FollowButton, UnfollowButton, Logo, PostDialog } from '@/components';
 
-import { useProfileQuery, useUploadFileMutation, useUserPosts } from './queries';
+import { useProfile, useUploadFile, useProfilePosts } from './queries';
 
 import * as S from './styles';
 
-const ProfileTemplate = (props: { isFollowed: boolean }) => {
+const ProfileTemplate = () => {
   const { user } = useUser();
   const router = useRouter();
   const username = router.query.username as string;
   const returnHref = React.useRef(router.asPath);
 
-  const profileQuery = useProfileQuery();
-  const postsQuery = useUserPosts();
-  const uploadFileMutation = useUploadFileMutation();
+  const profile = useProfile();
+  const profilePosts = useProfilePosts();
+  const uploadFile = useUploadFile();
 
-  const [isFollowed, setIsFollowed] = React.useState(props.isFollowed);
+  const [hasFollowed, setHasFollowed] = React.useState(profile.data?.hasFollowed);
 
-  const isUserLoggedProfile = user?.user_metadata.username === profileQuery.data?.username;
+  React.useEffect(() => {
+    setHasFollowed(profile.data?.hasFollowed);
+  }, [profile.data?.hasFollowed]);
+
+  const isUserLoggedProfile = user?.user_metadata.username === profile.data?.username;
 
   const onFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
 
     const file = event.target.files[0];
 
-    uploadFileMutation.mutate(
+    uploadFile.mutate(
       { file, username: user?.user_metadata.username },
       {
         onSuccess: () => {
@@ -41,7 +45,7 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
     );
   };
 
-  if (!profileQuery.data) {
+  if (!profile.data) {
     return (
       <S.UserNotFound>
         <h2>Esta página não está disponível.</h2>
@@ -60,8 +64,8 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
       <S.ProfileWrapper>
         <S.ProfileImageWrapper>
           <S.ProfileImage
-            src={profileQuery.data.avatar_url}
-            alt={`Imagem de perfil de ${profileQuery.data.username}`}
+            src={profile.data.avatar_url}
+            alt={`Imagem de perfil de ${profile.data.username}`}
           />
           <input
             type="file"
@@ -71,41 +75,41 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
           />
         </S.ProfileImageWrapper>
         <S.ProfileInfo>
-          <S.ProfileUsername>{profileQuery.data.username}</S.ProfileUsername>
+          <S.ProfileUsername>{profile.data.username}</S.ProfileUsername>
           {!!user &&
             (!isUserLoggedProfile ? (
-              isFollowed ? (
-                <UnfollowButton username={username} onFollowChange={setIsFollowed} />
+              hasFollowed ? (
+                <UnfollowButton username={username} onFollowChange={setHasFollowed} />
               ) : (
-                <FollowButton username={username} onFollowChange={setIsFollowed} />
+                <FollowButton username={username} onFollowChange={setHasFollowed} />
               )
             ) : null)}
         </S.ProfileInfo>
         <S.ProfileStats>
           <p>
-            <strong>{profileQuery.data.postsCount[0].count}</strong> publicações
+            <strong>{profile.data.postsCount[0].count}</strong> publicações
           </p>
 
           <FollowDialog type="followers">
             <p>
-              <strong>{profileQuery.data.followersCount[0].count}</strong> seguidores
+              <strong>{profile.data.followersCount[0].count}</strong> seguidores
             </p>
           </FollowDialog>
 
           <FollowDialog type="following">
             <p>
-              <strong>{profileQuery.data.followingCount[0].count}</strong> seguindo
+              <strong>{profile.data.followingCount[0].count}</strong> seguindo
             </p>
           </FollowDialog>
         </S.ProfileStats>
         <S.ProfileBio>
-          <p>{profileQuery.data.name}</p>
-          <p>{profileQuery.data.bio}</p>
+          <p>{profile.data.name}</p>
+          <p>{profile.data.bio}</p>
         </S.ProfileBio>
       </S.ProfileWrapper>
 
       <S.Feed>
-        {!postsQuery.data?.length && (
+        {!profilePosts.data?.length && (
           <S.NoPosts>
             {isUserLoggedProfile ? (
               <>
@@ -121,10 +125,10 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
           </S.NoPosts>
         )}
 
-        {postsQuery.data?.map((post) => (
+        {profilePosts.data?.map((post) => (
           <Link
             key={post.id}
-            href={`${router.pathname}?username=${profileQuery.data.username}`}
+            href={`${router.pathname}?username=${profile.data.username}`}
             as={`/p/${post.id}`}
             shallow
           >
@@ -141,7 +145,7 @@ const ProfileTemplate = (props: { isFollowed: boolean }) => {
                       {post.likesCount[0].count}
                     </span>
                   </S.Overlay>
-                  <img src={post.image_url} alt={`Foto de ${profileQuery.data.username}`} />
+                  <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
                 </li>
               </PostDialog>
             </a>

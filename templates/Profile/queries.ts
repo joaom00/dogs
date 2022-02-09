@@ -2,6 +2,7 @@ import { useRouter } from 'next/router';
 import { QueryFunctionContext, useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { supabase } from '@/lib/supabase';
+import { useUser } from '@/context/AuthContext';
 
 type CustomKeys = Array<{
   scope: string;
@@ -20,14 +21,14 @@ export type ProfileResponse = {
   postsCount: Array<{ count: number }>;
   followersCount: Array<{ count: number }>;
   followingCount: Array<{ count: number }>;
+  hasFollowed: boolean;
 };
 
-export const getProfile = async ({
-  queryKey,
-}: QueryFunctionContext<CustomKeys>): Promise<ProfileResponse> => {
-  const [{ username }] = queryKey;
-
-  const res = await supabase
+export const getProfile = async (
+  username: string,
+  followerUsername: string
+): Promise<ProfileResponse> => {
+  const profileResponse = await supabase
     .from('profiles')
     .select(
       'name, username, bio, avatar_url, postsCount:posts!user_username(count), followersCount:follows!followed_username(count), followingCount:follows!follower_username(count)'
@@ -35,16 +36,29 @@ export const getProfile = async ({
     .eq('username', username)
     .single();
 
-  return res.data;
+  const hasFollowedResponse = await supabase
+    .from('follows')
+    .select('*', { count: 'exact' })
+    .match({ follower_username: followerUsername, followed_username: username });
+
+  return {
+    ...profileResponse.data,
+    hasFollowed: !!hasFollowedResponse.count,
+  };
 };
 
-export const useProfileQuery = () => {
+export const useProfile = () => {
   const router = useRouter();
   const username = router.query.username as string;
+  const { user } = useUser();
 
-  return useQuery([{ scope: 'profile', type: 'detail', username }], getProfile, {
-    staleTime: Infinity,
-  });
+  return useQuery(
+    [{ scope: 'profile', type: 'detail', username }],
+    () => getProfile(username, user?.user_metadata.username),
+    {
+      staleTime: Infinity,
+    }
+  );
 };
 
 /* -------------------------------------------------------------------------------------------------
@@ -72,7 +86,7 @@ export const getUserPosts = async ({
   return res.data;
 };
 
-export const useUserPosts = () => {
+export const useProfilePosts = () => {
   const router = useRouter();
   const username = router.query.username as string;
 
@@ -93,7 +107,7 @@ const uploadFile = async ({ file, username }: { file: File; username: string }) 
   await supabase.from('profiles').update({ avatar_url: publicURL }).match({ username });
 };
 
-export const useUploadFileMutation = () => {
+export const useUploadFile = () => {
   const queryClient = useQueryClient();
 
   return useMutation(uploadFile, {
