@@ -8,7 +8,7 @@ import { ChatIcon, HeartIcon } from '@/icons';
 import { PostDialog } from '@/components';
 import type { PostResponse } from '@/templates/Home/queries';
 
-import { useLikeMutation, useUnlikeMutation } from './queries';
+import { useAddLike, useDeleteLike } from './queries';
 
 import * as S from './styles';
 
@@ -71,10 +71,10 @@ export default function Post({ post }: { post: PostResponse }) {
 
 const LikeButton = ({ postId }: { postId: number }) => {
   const { user } = useUser();
-  const likeMutation = useLikeMutation();
+  const addLike = useAddLike();
 
   const handleClick = () => {
-    likeMutation.mutate({ postId, userId: user?.id as string });
+    addLike.mutate({ postId, userId: user?.id as string });
   };
 
   return (
@@ -86,10 +86,10 @@ const LikeButton = ({ postId }: { postId: number }) => {
 
 const UnlikeButton = ({ postId }: { postId: number }) => {
   const { user } = useUser();
-  const likeMutation = useUnlikeMutation();
+  const deleteLike = useDeleteLike();
 
   const handleClick = () => {
-    likeMutation.mutate({ postId, userId: user?.id as string });
+    deleteLike.mutate({ postId, userId: user?.id as string });
   };
 
   return (

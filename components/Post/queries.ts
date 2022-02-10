@@ -2,19 +2,19 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { supabase } from '@/lib/supabase';
 
-import type { PostDetailResponse } from '@/components/PostDialog/queries';
+import type { PostResponse as PostDialogResponse } from '@/components/PostDialog/queries';
 import type { PostResponse } from '@/templates/Home/queries';
 
 /* -------------------------------------------------------------------------------------------------
- * useLikeMutation
+ * useAddLike
  * -----------------------------------------------------------------------------------------------*/
 
-type LikeData = {
+type CreateLikeData = {
   postId: number;
   userId: string;
 };
 
-const createLike = async ({ postId, userId }: LikeData) => {
+const createLike = async ({ postId, userId }: CreateLikeData) => {
   const res = await supabase.from('likes').insert({
     post_id: postId,
     user_id: userId,
@@ -23,7 +23,7 @@ const createLike = async ({ postId, userId }: LikeData) => {
   return res.data;
 };
 
-export const useLikeMutation = () => {
+export const useAddLike = () => {
   const queryClient = useQueryClient();
 
   return useMutation(createLike, {
@@ -46,7 +46,7 @@ export const useLikeMutation = () => {
 
       queryClient.setQueryData([{ scope: 'posts', type: 'feed' }], posts);
 
-      const postDetail = queryClient.getQueryData<PostDetailResponse>([
+      const postDetail = queryClient.getQueryData<PostDialogResponse>([
         { scope: 'post', type: 'detail', postId },
       ]);
 
@@ -66,21 +66,21 @@ export const useLikeMutation = () => {
 };
 
 /* -------------------------------------------------------------------------------------------------
- * useUnlikeMutation
+ * useDeleteLike
  * -----------------------------------------------------------------------------------------------*/
 
-type UnlikeData = {
+type DeleteLikeData = {
   postId: number;
   userId: string;
 };
 
-const deleteLike = async ({ postId, userId }: UnlikeData) => {
+const deleteLike = async ({ postId, userId }: DeleteLikeData) => {
   const res = await supabase.from('likes').delete().match({ post_id: postId, user_id: userId });
 
   return res.data;
 };
 
-export const useUnlikeMutation = () => {
+export const useDeleteLike = () => {
   const queryClient = useQueryClient();
 
   return useMutation(deleteLike, {
@@ -103,7 +103,7 @@ export const useUnlikeMutation = () => {
 
       queryClient.setQueryData([{ scope: 'posts', type: 'feed' }], posts);
 
-      const postDetail = queryClient.getQueryData<PostDetailResponse>([
+      const postDetail = queryClient.getQueryData<PostDialogResponse>([
         { scope: 'post', type: 'detail', postId },
       ]);
 

@@ -18,7 +18,7 @@ const getUsers = async (username: string): Promise<UsersResponse[] | null> => {
   return usersResponse.data;
 };
 
-export const useUsersQuery = () => {
+export const useUserSuggestions = () => {
   const { user } = useUser();
 
   return useQuery([{ scope: 'suggestions', username: user?.user_metadata.username }], () =>

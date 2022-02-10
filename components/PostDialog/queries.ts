@@ -10,10 +10,10 @@ type CustomKeys = Array<{
 }>;
 
 /* -------------------------------------------------------------------------------------------------
- * usePostDetailQuery
+ * usePost
  * -----------------------------------------------------------------------------------------------*/
 
-export type PostDetailResponse = {
+export type PostResponse = {
   id: number;
   image_url: string;
   description: string;
@@ -27,9 +27,9 @@ export type PostDetailResponse = {
   };
 };
 
-const getPostDetail = async ({ postId, userId }: { postId: number; userId: string }) => {
+const getPost = async ({ postId, userId }: { postId: number; userId: string }) => {
   const postResponse = await supabase
-    .from<PostDetailResponse>('posts')
+    .from<PostResponse>('posts')
     .select(
       'id, image_url, description, created_at, likesCount:likes(count), user:user_username(id, username, avatar_url)'
     )
@@ -47,24 +47,20 @@ const getPostDetail = async ({ postId, userId }: { postId: number; userId: strin
   };
 };
 
-export const usePostDetailQuery = (postId: number, open: boolean) => {
+export const usePost = (postId: number, open: boolean) => {
   const { user } = useUser();
   const userId = user?.id as string;
 
-  return useQuery(
-    [{ scope: 'post', type: 'detail', postId }],
-    () => getPostDetail({ postId, userId }),
-    {
-      enabled: open,
-    }
-  );
+  return useQuery([{ scope: 'post', type: 'detail', postId }], () => getPost({ postId, userId }), {
+    enabled: open,
+  });
 };
 
 /* -------------------------------------------------------------------------------------------------
- * usePostCommentsQuery
+ * useComments
  * -----------------------------------------------------------------------------------------------*/
 
-type PostCommentsResponse = {
+type CommentsResponse = {
   id: number;
   post_id: number;
   content: string;
@@ -75,11 +71,11 @@ type PostCommentsResponse = {
   };
 };
 
-const getPostComments = async ({ queryKey }: QueryFunctionContext<CustomKeys>) => {
+const getComments = async ({ queryKey }: QueryFunctionContext<CustomKeys>) => {
   const [{ postId }] = queryKey;
 
   const res = await supabase
-    .from<PostCommentsResponse>('comments')
+    .from<CommentsResponse>('comments')
     .select('id, content, user:user_id(username, avatar_url)')
     .eq('post_id', postId)
     .order('created_at', { ascending: false });
@@ -87,14 +83,14 @@ const getPostComments = async ({ queryKey }: QueryFunctionContext<CustomKeys>) =
   return res.data;
 };
 
-export const usePostCommentsQuery = (postId: number, open: boolean) => {
-  return useQuery([{ scope: 'post', type: 'comments', postId }], getPostComments, {
+export const useComments = (postId: number, open: boolean) => {
+  return useQuery([{ scope: 'post', type: 'comments', postId }], getComments, {
     enabled: open,
   });
 };
 
 /* -------------------------------------------------------------------------------------------------
- * useCommentMutation
+ * useAddComment
  * -----------------------------------------------------------------------------------------------*/
 
 type CreateCommentData = {
@@ -113,7 +109,7 @@ const createComment = async ({ content, postId, userId }: CreateCommentData) => 
   return res.data;
 };
 
-export const useCommentMutation = () => {
+export const useAddComment = () => {
   const queryClient = useQueryClient();
 
   return useMutation(createComment, {
@@ -123,15 +119,15 @@ export const useCommentMutation = () => {
 };
 
 /* -------------------------------------------------------------------------------------------------
- * useLikeMutation
+ * useAddLike
  * -----------------------------------------------------------------------------------------------*/
 
-type LikeData = {
+type CreateLikeData = {
   postId: number;
   userId: string;
 };
 
-const createLike = async ({ postId, userId }: LikeData) => {
+const createLike = async ({ postId, userId }: CreateLikeData) => {
   const res = await supabase.from('likes').insert({
     post_id: postId,
     user_id: userId,
@@ -140,12 +136,12 @@ const createLike = async ({ postId, userId }: LikeData) => {
   return res.data;
 };
 
-export const useLikeMutation = () => {
+export const useAddLike = () => {
   const queryClient = useQueryClient();
 
   return useMutation(createLike, {
     onMutate: ({ postId }) => {
-      const postDetail = queryClient.getQueryData<PostDetailResponse>([
+      const postDetail = queryClient.getQueryData<PostResponse>([
         { scope: 'post', type: 'detail', postId },
       ]);
 
@@ -165,26 +161,26 @@ export const useLikeMutation = () => {
 };
 
 /* -------------------------------------------------------------------------------------------------
- * useUnlikeMutation
+ * useDeleteLike
  * -----------------------------------------------------------------------------------------------*/
 
-type UnlikeData = {
+type DeleteLikeData = {
   postId: number;
   userId: string;
 };
 
-const deleteLike = async ({ postId, userId }: UnlikeData) => {
+const deleteLike = async ({ postId, userId }: DeleteLikeData) => {
   const res = await supabase.from('likes').delete().match({ post_id: postId, user_id: userId });
 
   return res.data;
 };
 
-export const useUnlikeMutation = () => {
+export const useDeleteLike = () => {
   const queryClient = useQueryClient();
 
   return useMutation(deleteLike, {
     onMutate: ({ postId }) => {
-      const postDetail = queryClient.getQueryData<PostDetailResponse>([
+      const postDetail = queryClient.getQueryData<PostResponse>([
         { scope: 'post', type: 'detail', postId },
       ]);
 

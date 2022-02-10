@@ -10,13 +10,7 @@ import { ChatIcon, CloseIcon, HeartIcon } from '@/icons';
 import { Spinner } from '@/components';
 import { Avatar, AvatarFallback } from '@/components/Avatar';
 
-import {
-  useCommentMutation,
-  usePostCommentsQuery,
-  usePostDetailQuery,
-  useLikeMutation,
-  useUnlikeMutation,
-} from './queries';
+import { usePost, useComments, useAddComment, useAddLike, useDeleteLike } from './queries';
 
 import * as S from './styles';
 
@@ -31,16 +25,16 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
   const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState('');
 
-  const postQuery = usePostDetailQuery(postId, props.open ?? open);
-  const commentsQuery = usePostCommentsQuery(postId, props.open ?? open);
-  const commentMutation = useCommentMutation();
+  const post = usePost(postId, props.open ?? open);
+  const comments = useComments(postId, props.open ?? open);
+  const addComment = useAddComment();
 
   const onSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!content.trim()) return;
 
-    commentMutation.mutate(
+    addComment.mutate(
       { content, postId, userId: user?.id as string },
       {
         onSuccess: () => {
@@ -60,28 +54,25 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
             onCloseAutoFocus={() => router.push(returnHref ?? '', undefined, { shallow: true })}
           >
             <S.PostImage>
-              {postQuery.data?.image_url && (
-                <img
-                  src={postQuery.data.image_url}
-                  alt={`Publicação de ${postQuery.data?.user?.username}`}
-                />
+              {post.data?.image_url && (
+                <img src={post.data.image_url} alt={`Publicação de ${post.data?.user?.username}`} />
               )}
             </S.PostImage>
 
             <S.PostContent>
-              {postQuery.isLoading || commentsQuery.isLoading ? (
+              {post.isLoading || comments.isLoading ? (
                 <S.SpinnerWrapper>
                   <Spinner />
                 </S.SpinnerWrapper>
               ) : (
                 <>
                   <S.PostContentHeader>
-                    <Link href={`/${postQuery.data?.user?.username}`}>
+                    <Link href={`/${post.data?.user?.username}`}>
                       <a>
                         <Avatar>
                           <S.PostContentHeaderImage
-                            src={postQuery.data?.user?.avatar_url}
-                            alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                            src={post.data?.user?.avatar_url}
+                            alt={`Foto de perfil de ${post.data?.user?.username}`}
                           />
                           <AvatarFallback>
                             <S.PostContentHeaderImageFallback />
@@ -90,21 +81,21 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       </a>
                     </Link>
 
-                    <Link href={`/${postQuery.data?.user?.username}`}>
+                    <Link href={`/${post.data?.user?.username}`}>
                       <a>
-                        <p>{postQuery.data?.user?.username}</p>
+                        <p>{post.data?.user?.username}</p>
                       </a>
                     </Link>
                   </S.PostContentHeader>
 
                   <S.PostContentComments>
                     <S.PostContentDescription>
-                      <Link href={`/${postQuery.data?.user?.username}`}>
+                      <Link href={`/${post.data?.user?.username}`}>
                         <a>
                           <Avatar>
                             <S.PostContentHeaderImage
-                              src={postQuery.data?.user?.avatar_url}
-                              alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                              src={post.data?.user?.avatar_url}
+                              alt={`Foto de perfil de ${post.data?.user?.username}`}
                             />
                             <AvatarFallback>
                               <S.PostContentHeaderImageFallback />
@@ -114,23 +105,23 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       </Link>
 
                       <p>
-                        <Link href={`/${postQuery.data?.user?.username}`}>
+                        <Link href={`/${post.data?.user?.username}`}>
                           <a>
-                            <strong>{postQuery.data?.user?.username}</strong>
+                            <strong>{post.data?.user?.username}</strong>
                           </a>
                         </Link>{' '}
-                        {postQuery.data?.description}
+                        {post.data?.description}
                       </p>
                     </S.PostContentDescription>
 
-                    {commentsQuery.data?.map((comment) => (
+                    {comments.data?.map((comment) => (
                       <S.PostContentDescription key={comment.id}>
                         <Link href={`/${comment.user.username}`}>
                           <a>
                             <Avatar>
                               <S.PostContentHeaderImage
-                                src={postQuery.data?.user?.avatar_url}
-                                alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                                src={post.data?.user?.avatar_url}
+                                alt={`Foto de perfil de ${post.data?.user?.username}`}
                               />
                               <AvatarFallback>
                                 <S.PostContentHeaderImageFallback />
@@ -152,7 +143,7 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                   </S.PostContentComments>
 
                   <S.PostContentActions>
-                    {postQuery.data?.hasLiked ? (
+                    {post.data?.hasLiked ? (
                       <UnlikeButton postId={postId} />
                     ) : (
                       <LikeButton postId={postId} />
@@ -162,10 +153,10 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       <ChatIcon size={24} />
                     </label>
 
-                    <S.PostLikes>{postQuery.data?.likesCount?.[0].count} curtidas</S.PostLikes>
+                    <S.PostLikes>{post.data?.likesCount?.[0].count} curtidas</S.PostLikes>
 
                     <S.PostDate>
-                      <ReactTimeAgo date={new Date(postQuery.data?.created_at as string)} />
+                      <ReactTimeAgo date={new Date(post.data?.created_at as string)} />
                     </S.PostDate>
                   </S.PostContentActions>
 
@@ -177,8 +168,8 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       value={content}
                       onChange={(event) => setContent(event.target.value)}
                     />
-                    <S.SubmitButton disabled={commentMutation.isLoading}>
-                      {commentMutation.isLoading && <Spinner />}
+                    <S.SubmitButton disabled={addComment.isLoading}>
+                      {addComment.isLoading && <Spinner />}
                       Publicar
                     </S.SubmitButton>
                   </S.PostCommentForm>
@@ -198,10 +189,10 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
 
 const LikeButton = ({ postId }: { postId: number }) => {
   const { user } = useUser();
-  const likeMutation = useLikeMutation();
+  const addLike = useAddLike();
 
   const handleClick = () => {
-    likeMutation.mutate({ postId, userId: user?.id as string });
+    addLike.mutate({ postId, userId: user?.id as string });
   };
 
   return (
@@ -213,10 +204,10 @@ const LikeButton = ({ postId }: { postId: number }) => {
 
 const UnlikeButton = ({ postId }: { postId: number }) => {
   const { user } = useUser();
-  const likeMutation = useUnlikeMutation();
+  const deleteLike = useDeleteLike();
 
   const handleClick = () => {
-    likeMutation.mutate({ postId, userId: user?.id as string });
+    deleteLike.mutate({ postId, userId: user?.id as string });
   };
 
   return (

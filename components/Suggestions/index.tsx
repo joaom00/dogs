@@ -1,28 +1,27 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { FollowButton, UnfollowButton } from '@/components';
+import { FollowButton, UnfollowButton, Spinner } from '@/components';
 
-import { useUsersQuery } from './queries';
+import { useUserSuggestions } from './queries';
 
 import * as S from './styles';
-import Spinner from '../Spinner';
 
 const Suggestions = () => {
-  const usersQuery = useUsersQuery();
+  const users = useUserSuggestions();
 
   return (
     <S.Wrapper>
       <h2>Algumas sugestões para você</h2>
 
       <S.UserList>
-        {usersQuery.isLoading && (
+        {users.isLoading && (
           <S.SpinnerWrapper>
             <Spinner size={18} />
           </S.SpinnerWrapper>
         )}
 
-        {usersQuery.data?.map((user) => (
+        {users.data?.map((user) => (
           <S.User key={user.id}>
             <Link href={user.username}>
               <a>
