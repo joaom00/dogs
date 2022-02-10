@@ -41,7 +41,7 @@ const modifiers = {
   `,
 
   medium: (theme: DefaultTheme) => css`
-    padding: 0.6rem ${theme.space.md};
+    padding: 1.2rem ${theme.space.md};
   `,
 };
 
