@@ -8,6 +8,8 @@ import { useUser } from '@/context/AuthContext';
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
 import { FollowDialog, FollowButton, UnfollowButton, Logo, PostDialog } from '@/components';
 
+import { Avatar, AvatarFallback } from '@/components/Avatar';
+
 import { useProfile, useUploadFile, useProfilePosts } from './queries';
 
 import * as S from './styles';
@@ -63,10 +65,15 @@ const ProfileTemplate = () => {
     <>
       <S.ProfileWrapper>
         <S.ProfileImageWrapper>
-          <S.ProfileImage
-            src={profile.data.avatar_url}
-            alt={`Imagem de perfil de ${profile.data.username}`}
-          />
+          <Avatar>
+            <S.ProfileImage
+              src={profile.data.avatar_url}
+              alt={`Foto de perfil de ${profile.data.username}`}
+            />
+            <AvatarFallback>
+              <S.ProfileImageFallback />
+            </AvatarFallback>
+          </Avatar>
           <input
             type="file"
             accept="image/jpg, image/png, image/jpeg"

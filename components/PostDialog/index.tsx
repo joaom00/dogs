@@ -8,6 +8,7 @@ import { useUser } from '@/context/AuthContext';
 
 import { ChatIcon, CloseIcon, HeartIcon } from '@/icons';
 import { Spinner } from '@/components';
+import { Avatar, AvatarFallback } from '@/components/Avatar';
 
 import {
   useCommentMutation,
@@ -77,10 +78,15 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                   <S.PostContentHeader>
                     <Link href={`/${postQuery.data?.user?.username}`}>
                       <a>
-                        <img
-                          src={postQuery.data?.user?.avatar_url}
-                          alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
-                        />
+                        <Avatar>
+                          <S.PostContentHeaderImage
+                            src={postQuery.data?.user?.avatar_url}
+                            alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                          />
+                          <AvatarFallback>
+                            <S.PostContentHeaderImageFallback />
+                          </AvatarFallback>
+                        </Avatar>
                       </a>
                     </Link>
 
@@ -95,10 +101,15 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                     <S.PostContentDescription>
                       <Link href={`/${postQuery.data?.user?.username}`}>
                         <a>
-                          <img
-                            src={postQuery.data?.user?.avatar_url}
-                            alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
-                          />
+                          <Avatar>
+                            <S.PostContentHeaderImage
+                              src={postQuery.data?.user?.avatar_url}
+                              alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                            />
+                            <AvatarFallback>
+                              <S.PostContentHeaderImageFallback />
+                            </AvatarFallback>
+                          </Avatar>
                         </a>
                       </Link>
 
@@ -116,10 +127,15 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       <S.PostContentDescription key={comment.id}>
                         <Link href={`/${comment.user.username}`}>
                           <a>
-                            <img
-                              src={comment.user?.avatar_url}
-                              alt={`Foto de perfil de ${comment.user?.username}`}
-                            />
+                            <Avatar>
+                              <S.PostContentHeaderImage
+                                src={postQuery.data?.user?.avatar_url}
+                                alt={`Foto de perfil de ${postQuery.data?.user?.username}`}
+                              />
+                              <AvatarFallback>
+                                <S.PostContentHeaderImageFallback />
+                              </AvatarFallback>
+                            </Avatar>
                           </a>
                         </Link>
 

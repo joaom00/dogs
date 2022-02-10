@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useQuery } from 'react-query';
 
@@ -9,6 +8,7 @@ import { useUser } from '@/context/AuthContext';
 
 import { HomeIcon } from '@/icons';
 import { Logo, AddPostDialog, DropdownMenu } from '@/components';
+import { Avatar, AvatarFallback } from '@/components/Avatar';
 
 import * as S from './styles';
 
@@ -20,7 +20,7 @@ const Header = () => {
   const [openDropdown, setOpenDropdown] = React.useState(false);
   const [isAddPostOpen, setIsAddPostOpen] = React.useState(false);
 
-  const { data } = useQuery(
+  const profileAvatar = useQuery(
     ['header_image'],
     async () => {
       const { data } = await supabase
@@ -55,20 +55,20 @@ const Header = () => {
                 </a>
               </Link>
             </li>
+
             {user && (
               <li>
                 <DropdownMenu.Root open={openDropdown} onOpenChange={setOpenDropdown}>
                   <DropdownMenu.Trigger>
-                    <Image
-                      src={
-                        data?.avatar_url ||
-                        'https://schveufltdgsfxvyzrwb.supabase.in/storage/v1/object/public/avatars/user.jpg'
-                      }
-                      width={24}
-                      height={24}
-                      objectFit="cover"
-                      alt="foto"
-                    />
+                    <Avatar>
+                      <S.AvatarImage
+                        src={profileAvatar.data?.avatar_url}
+                        alt={`Foto de perfil de ${user.user_metadata.username}`}
+                      />
+                      <AvatarFallback>
+                        <S.AvatarFallback />
+                      </AvatarFallback>
+                    </Avatar>
                   </DropdownMenu.Trigger>
 
                   <DropdownMenu.Content sideOffset={5} hidden={isAddPostOpen}>

@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { Overlay, Content, Close } from '@radix-ui/react-dialog';
+import { AvatarImage } from '@radix-ui/react-avatar';
 
 export const DialogOverlay = styled(Overlay)`
   background-color: rgba(0, 0, 0, 0.85);
@@ -102,19 +103,27 @@ export const PostContentHeader = styled.header`
 
     border-bottom: 1px solid ${theme.colors.sand6};
 
-    img {
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-      object-fit: cover;
-      border-radius: 9999px;
-    }
-
     p {
       flex-shrink: 0;
       font-weight: ${theme.font.bold};
     }
   `}
+`;
+
+export const PostContentHeaderImage = styled(AvatarImage)`
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 9999px;
+`;
+
+export const PostContentHeaderImageFallback = styled.img`
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 9999px;
 `;
 
 export const PostContentComments = styled.div`
