@@ -21,7 +21,7 @@ const Header = () => {
   const [isAddPostOpen, setIsAddPostOpen] = React.useState(false);
 
   const profileAvatar = useQuery(
-    ['header_image'],
+    ['avatar', user?.user_metadata.username],
     async () => {
       const { data } = await supabase
         .from('profiles')
@@ -35,8 +35,8 @@ const Header = () => {
     }
   );
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
+  const handleSignOut = () => {
+    supabase.auth.signOut();
     router.push('/login');
   };
 
@@ -56,50 +56,47 @@ const Header = () => {
               </Link>
             </li>
 
-            {user && (
-              <li>
-                <DropdownMenu.Root open={openDropdown} onOpenChange={setOpenDropdown}>
-                  <DropdownMenu.Trigger>
-                    <Avatar>
-                      <S.AvatarImage
-                        src={profileAvatar.data?.avatar_url}
-                        alt={`Foto de perfil de ${user.user_metadata.username}`}
-                      />
-                      <AvatarFallback>
-                        <S.AvatarFallback />
-                      </AvatarFallback>
-                    </Avatar>
-                  </DropdownMenu.Trigger>
+            <li>
+              <DropdownMenu.Root open={openDropdown} onOpenChange={setOpenDropdown}>
+                <DropdownMenu.Trigger>
+                  <Avatar>
+                    <S.AvatarImage
+                      src={profileAvatar.data?.avatar_url}
+                      alt={`Foto de perfil de ${user?.user_metadata.username}`}
+                    />
+                    <AvatarFallback>
+                      <S.AvatarFallback />
+                    </AvatarFallback>
+                  </Avatar>
+                </DropdownMenu.Trigger>
 
-                  <DropdownMenu.Content sideOffset={5} hidden={isAddPostOpen}>
-                    <Link href={`/${user?.user_metadata.username}`} passHref>
-                      <DropdownMenu.Item asChild>
-                        <a onClick={onDropdownClose}>Perfil</a>
-                      </DropdownMenu.Item>
-                    </Link>
-
-                    <AddPostDialog open={isAddPostOpen} onOpenChange={setIsAddPostOpen}>
-                      <DropdownMenu.Item onSelect={(event) => event.preventDefault()}>
-                        Nova foto
-                        {/* <button onClick={onPostDialogOpen}>Nova foto</button> */}
-                      </DropdownMenu.Item>
-                    </AddPostDialog>
-
-                    <Link href="/conta/editar" passHref>
-                      <DropdownMenu.Item asChild>
-                        <a onClick={onDropdownClose}>Configurações</a>
-                      </DropdownMenu.Item>
-                    </Link>
-
-                    <DropdownMenu.Separator />
-
+                <DropdownMenu.Content sideOffset={5} hidden={isAddPostOpen}>
+                  <Link href={`/${user?.user_metadata.username}`} passHref>
                     <DropdownMenu.Item asChild>
-                      <button onClick={handleSignOut}>Sair</button>
+                      <a onClick={onDropdownClose}>Perfil</a>
                     </DropdownMenu.Item>
-                  </DropdownMenu.Content>
-                </DropdownMenu.Root>
-              </li>
-            )}
+                  </Link>
+
+                  <AddPostDialog open={isAddPostOpen} onOpenChange={setIsAddPostOpen}>
+                    <DropdownMenu.Item onSelect={(event) => event.preventDefault()}>
+                      Nova foto
+                    </DropdownMenu.Item>
+                  </AddPostDialog>
+
+                  <Link href="/conta/editar" passHref>
+                    <DropdownMenu.Item asChild>
+                      <a onClick={onDropdownClose}>Configurações</a>
+                    </DropdownMenu.Item>
+                  </Link>
+
+                  <DropdownMenu.Separator />
+
+                  <DropdownMenu.Item asChild>
+                    <button onClick={handleSignOut}>Sair</button>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
+            </li>
           </S.NavList>
         </S.Container>
       </S.Wrapper>
