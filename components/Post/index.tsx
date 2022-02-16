@@ -13,6 +13,7 @@ import { useAddLike, useDeleteLike } from './queries';
 import * as S from './styles';
 
 export default function Post({ post }: { post: PostResponse }) {
+  const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
   const router = useRouter();
   const returnHref = React.useRef(router.asPath);
 
@@ -31,11 +32,21 @@ export default function Post({ post }: { post: PostResponse }) {
             <a>{post.owner.username}</a>
           </Link>
         </S.PostHeader>
-        <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
-          <a onClick={() => setOpen(true)}>
-            <S.PostImage src={post.image_url} />
-          </a>
-        </Link>
+
+        {isMobile ? (
+          <Link href={`/p/${post.id}/comments`}>
+            <a>
+              <S.PostImage src={post.image_url} />
+            </a>
+          </Link>
+        ) : (
+          <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
+            <a onClick={() => setOpen(true)}>
+              <S.PostImage src={post.image_url} />
+            </a>
+          </Link>
+        )}
+
         <S.PostActions>
           {post.hasLiked ? <UnlikeButton postId={post.id} /> : <LikeButton postId={post.id} />}
 
@@ -45,17 +56,31 @@ export default function Post({ post }: { post: PostResponse }) {
             </a>
           </Link>
         </S.PostActions>
+
         <S.PostLikes>{post.likesCount[0].count} curtidas</S.PostLikes>
+
         <S.PostDescription>
           <strong>{post.owner.username}</strong> {post.description}
         </S.PostDescription>
-        <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
-          <a>
-            <S.PostShowAllComments onClick={() => setOpen(true)}>
-              Ver todos os {post.commentsCount[0].count} comentários
-            </S.PostShowAllComments>
-          </a>
-        </Link>
+
+        {isMobile ? (
+          <Link href={`/p/${post.id}/comments`}>
+            <a>
+              <S.PostShowAllComments>
+                Ver todos os {post.commentsCount[0].count} comentários
+              </S.PostShowAllComments>
+            </a>
+          </Link>
+        ) : (
+          <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
+            <a>
+              <S.PostShowAllComments onClick={() => setOpen(true)}>
+                Ver todos os {post.commentsCount[0].count} comentários
+              </S.PostShowAllComments>
+            </a>
+          </Link>
+        )}
+
         <S.PostCreatedInfo>há 1 dia</S.PostCreatedInfo>
       </S.Wrapper>
 

@@ -17,6 +17,7 @@ export type PostResponse = {
   id: number;
   image_url: string;
   description: string;
+  commentsCount: Array<{ count: number }>;
   likesCount: Array<{ count: number }>;
   hasLiked: boolean;
   created_at: string;
@@ -27,14 +28,20 @@ export type PostResponse = {
   };
 };
 
-const getPost = async ({ postId, userId }: { postId: number; userId: string }) => {
+export const getPost = async ({ postId, userId }: { postId: number; userId: string }) => {
+  if (!postId) return;
+
   const postResponse = await supabase
     .from<PostResponse>('posts')
     .select(
-      'id, image_url, description, created_at, likesCount:likes(count), user:user_username(id, username, avatar_url)'
+      'id, image_url, description, created_at, commentsCount:comments(count), likesCount:likes(count), user:user_username(id, username, avatar_url)'
     )
     .eq('id', postId)
     .single();
+
+  if (postResponse.error) {
+    throw new Error('Publicação não existe');
+  }
 
   const likeResponse = await supabase
     .from('likes')
@@ -47,7 +54,7 @@ const getPost = async ({ postId, userId }: { postId: number; userId: string }) =
   };
 };
 
-export const usePost = (postId: number, open: boolean) => {
+export const usePost = (postId: number, open?: boolean) => {
   const { user } = useUser();
   const userId = user?.id as string;
 
@@ -74,16 +81,22 @@ type CommentsResponse = {
 const getComments = async ({ queryKey }: QueryFunctionContext<CustomKeys>) => {
   const [{ postId }] = queryKey;
 
-  const res = await supabase
+  if (!postId) return;
+
+  const commentsResponse = await supabase
     .from<CommentsResponse>('comments')
     .select('id, content, user:user_id(username, avatar_url)')
     .eq('post_id', postId)
     .order('created_at', { ascending: false });
 
-  return res.data;
+  if (!!commentsResponse.error) {
+    throw new Error('Não foi possível buscar os comentários');
+  }
+
+  return commentsResponse.data;
 };
 
-export const useComments = (postId: number, open: boolean) => {
+export const useComments = (postId: number, open?: boolean) => {
   return useQuery([{ scope: 'post', type: 'comments', postId }], getComments, {
     enabled: open,
   });

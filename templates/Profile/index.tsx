@@ -14,11 +14,13 @@ import { useProfile, useUploadFile, useProfilePosts } from './queries';
 
 import * as S from './styles';
 
+// TODO: criar um unico modal para os posts, ao inves de cada post ter seu modal
 const ProfileTemplate = () => {
   const { user } = useUser();
   const router = useRouter();
   const username = router.query.username as string;
   const returnHref = React.useRef(router.asPath);
+  const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
 
   const profile = useProfile();
   const profilePosts = useProfilePosts();
@@ -132,32 +134,56 @@ const ProfileTemplate = () => {
           </S.NoPosts>
         )}
 
-        {profilePosts.data?.map((post) => (
-          <Link
-            key={post.id}
-            href={`${router.pathname}?username=${profile.data.username}`}
-            as={`/p/${post.id}`}
-            shallow
-          >
-            <a>
-              <PostDialog postId={post.id} returnHref={returnHref.current}>
-                <li>
-                  <S.Overlay>
-                    <span>
-                      <ChatIcon size={24} />
-                      {post.commentsCount[0].count}
-                    </span>
-                    <span>
-                      <HeartIcon size={24} />
-                      {post.likesCount[0].count}
-                    </span>
-                  </S.Overlay>
-                  <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
-                </li>
-              </PostDialog>
-            </a>
-          </Link>
-        ))}
+        {profilePosts.data?.map((post) => {
+          if (isMobile) {
+            return (
+              <Link key={post.id} href={`/p/${post.id}`}>
+                <a>
+                  <li>
+                    <S.Overlay>
+                      <span>
+                        <ChatIcon size={24} />
+                        {post.commentsCount[0].count}
+                      </span>
+                      <span>
+                        <HeartIcon size={24} />
+                        {post.likesCount[0].count}
+                      </span>
+                    </S.Overlay>
+                    <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
+                  </li>
+                </a>
+              </Link>
+            );
+          }
+
+          return (
+            <Link
+              key={post.id}
+              href={`${router.pathname}?username=${profile.data.username}`}
+              as={`/p/${post.id}`}
+              shallow
+            >
+              <a>
+                <PostDialog postId={post.id} returnHref={returnHref.current}>
+                  <li>
+                    <S.Overlay>
+                      <span>
+                        <ChatIcon size={24} />
+                        {post.commentsCount[0].count}
+                      </span>
+                      <span>
+                        <HeartIcon size={24} />
+                        {post.likesCount[0].count}
+                      </span>
+                    </S.Overlay>
+                    <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
+                  </li>
+                </PostDialog>
+              </a>
+            </Link>
+          );
+        })}
       </S.Feed>
     </>
   );

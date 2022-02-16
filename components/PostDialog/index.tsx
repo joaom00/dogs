@@ -29,7 +29,7 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
   const comments = useComments(postId, props.open ?? open);
   const addComment = useAddComment();
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = (event: React.MouseEvent) => {
     event.preventDefault();
 
     if (!content.trim()) return;
@@ -120,8 +120,8 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                           <a>
                             <Avatar>
                               <S.PostContentHeaderImage
-                                src={post.data?.user?.avatar_url}
-                                alt={`Foto de perfil de ${post.data?.user?.username}`}
+                                src={comment.user.avatar_url}
+                                alt={`Foto de perfil de ${comment.user.username}`}
                               />
                               <AvatarFallback>
                                 <S.PostContentHeaderImageFallback />
@@ -160,7 +160,7 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                     </S.PostDate>
                   </S.PostContentActions>
 
-                  <S.PostCommentForm onSubmit={onSubmit}>
+                  <S.PostCommentForm>
                     <input
                       id="comment"
                       placeholder="Adicione um comentário..."
@@ -168,7 +168,11 @@ const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, .
                       value={content}
                       onChange={(event) => setContent(event.target.value)}
                     />
-                    <S.SubmitButton disabled={addComment.isLoading}>
+                    <S.SubmitButton
+                      onClick={onSubmit}
+                      type="submit"
+                      disabled={addComment.isLoading}
+                    >
                       {addComment.isLoading && <Spinner />}
                       Publicar
                     </S.SubmitButton>
