@@ -4,15 +4,15 @@ import { useRouter } from 'next/router';
 import ReactTimeAgo from 'react-time-ago';
 
 import { ChatIcon, HeartIcon } from '@/icons';
-import { Spinner } from '@/components';
-import { Avatar, AvatarFallback } from '@/components/Avatar';
+import { Spinner } from '@components/Spinner';
+import { Avatar, AvatarFallback } from '@components/Avatar';
 import {
   useAddLike,
   useDeleteLike,
   useComments,
   useAddComment,
   usePost,
-} from '@/components/PostDialog/queries';
+} from '@components/PostDialog/queries';
 
 import { useUser } from '@/context/AuthContext';
 
@@ -61,7 +61,7 @@ const PostLayoutDesktop = () => {
     return (
       <S.PostDesktop>
         <S.PostImage>
-          {post.data.image_url && (
+          {post.data?.image_url && (
             <img src={post.data.image_url} alt={`Publicação de ${post.data.user.username}`} />
           )}
         </S.PostImage>
@@ -74,12 +74,12 @@ const PostLayoutDesktop = () => {
           ) : (
             <>
               <S.PostContentHeader>
-                <Link href={`/${post.data.user.username}`}>
+                <Link href={`/${post.data?.user.username}`}>
                   <a>
                     <Avatar>
                       <S.PostContentHeaderImage
-                        src={post.data.user.avatar_url}
-                        alt={`Foto de perfil de ${post.data.user.username}`}
+                        src={post.data?.user.avatar_url}
+                        alt={`Foto de perfil de ${post.data?.user.username}`}
                       />
                       <AvatarFallback>
                         <S.PostContentHeaderImageFallback />
@@ -88,21 +88,21 @@ const PostLayoutDesktop = () => {
                   </a>
                 </Link>
 
-                <Link href={`/${post.data.user.username}`}>
+                <Link href={`/${post.data?.user.username}`}>
                   <a>
-                    <p>{post.data.user.username}</p>
+                    <p>{post.data?.user.username}</p>
                   </a>
                 </Link>
               </S.PostContentHeader>
 
               <S.PostContentComments>
                 <S.PostContentDescription>
-                  <Link href={`/${post.data.user.username}`}>
+                  <Link href={`/${post.data?.user.username}`}>
                     <a>
                       <Avatar>
                         <S.PostContentHeaderImage
-                          src={post.data.user.avatar_url}
-                          alt={`Foto de perfil de ${post.data.user.username}`}
+                          src={post.data?.user.avatar_url}
+                          alt={`Foto de perfil de ${post.data?.user.username}`}
                         />
                         <AvatarFallback>
                           <S.PostContentHeaderImageFallback />
@@ -112,12 +112,12 @@ const PostLayoutDesktop = () => {
                   </Link>
 
                   <p>
-                    <Link href={`/${post.data.user.username}`}>
+                    <Link href={`/${post.data?.user.username}`}>
                       <a>
-                        <strong>{post.data.user.username}</strong>
+                        <strong>{post.data?.user.username}</strong>
                       </a>
                     </Link>{' '}
-                    {post.data.description}
+                    {post.data?.description}
                   </p>
                 </S.PostContentDescription>
 

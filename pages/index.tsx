@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase';
-import { getPosts } from '@/templates/Home/queries';
 import type { GetServerSidePropsContext } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
+
+import { supabase } from '@/lib/supabase';
 import HomeTemplate from '../templates/Home';
+import { getPosts } from '@/templates/Home/queries';
 
 export default function HomePage() {
   return <HomeTemplate />;

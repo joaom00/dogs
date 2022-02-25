@@ -11,7 +11,9 @@ import { supabase } from '@/lib/supabase';
 import { useYupValidationResolver } from '@/hooks';
 import { messageMapper } from '@/utils';
 
-import { Button, TextField, Spinner } from '@/components';
+import { Button } from '@components/Button';
+import { TextField } from '@components/TextField';
+import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 

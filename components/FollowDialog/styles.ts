@@ -19,6 +19,7 @@ export const FollowWrapper = styled.div`
 export const FollowUsername = styled.a`
   ${({ theme }) => css`
     display: block;
+    text-align: start;
     font-weight: ${theme.font.medium};
     font-size: ${theme.font.sizes.small};
     margin-bottom: 4px;
@@ -31,6 +32,8 @@ export const FollowUsername = styled.a`
 
 export const FollowName = styled.p`
   ${({ theme }) => css`
+    display: block;
+    text-align: start;
     font-size: ${theme.font.sizes.small};
     color: ${theme.colors.sand11};
   `}

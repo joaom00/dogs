@@ -8,7 +8,7 @@ type FileInputProps = {
   name: string;
 } & React.InputHTMLAttributes<HTMLInputElement>;
 
-export default function FileInput({ name, ...props }: FileInputProps) {
+export const FileInput = ({ name, ...props }: FileInputProps) => {
   const { register, unregister, watch, setValue } = useFormContext();
   const files = watch(name);
 
@@ -47,7 +47,7 @@ export default function FileInput({ name, ...props }: FileInputProps) {
       )}
     </div>
   );
-}
+};
 
 type DropzoneViewProps = {
   fileRejections: FileRejection[];

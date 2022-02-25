@@ -8,7 +8,8 @@ import { useUser } from '@/context/AuthContext';
 import type { ProfileResponse } from '@/templates/Profile/queries';
 
 import { UserIcon } from '@/icons';
-import { Button, Spinner } from '@/components';
+import { Button } from '@components/Button';
+import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -17,7 +18,7 @@ type UnfollowButtonProps = {
   onFollowChange: (followed: boolean) => void;
 };
 
-export default function UnfollowButton({ username, onFollowChange }: UnfollowButtonProps) {
+export const UnfollowButton = ({ username, onFollowChange }: UnfollowButtonProps) => {
   const { user } = useUser();
 
   const queryClient = useQueryClient();
@@ -77,4 +78,4 @@ export default function UnfollowButton({ username, onFollowChange }: UnfollowBut
       </S.AlertDialogContent>
     </AlertDialog.Root>
   );
-}
+};

@@ -1,7 +1,5 @@
-export default function EditProfile() {
-  return (
-    <div>
-      <h1>editar perfil</h1>
-    </div>
-  );
+import { EditProfile } from '@/templates/EditProfile';
+
+export default function EditProfilePage() {
+  return <EditProfile />;
 }

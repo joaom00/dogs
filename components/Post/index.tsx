@@ -5,14 +5,14 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/context/AuthContext';
 
 import { ChatIcon, HeartIcon } from '@/icons';
-import { PostDialog } from '@/components';
+import { PostDialog } from '@components/PostDialog';
 import type { PostResponse } from '@/templates/Home/queries';
 
 import { useAddLike, useDeleteLike } from './queries';
 
 import * as S from './styles';
 
-export default function Post({ post }: { post: PostResponse }) {
+export const Post = ({ post }: { post: PostResponse }) => {
   const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
   const router = useRouter();
   const returnHref = React.useRef(router.asPath);
@@ -92,7 +92,7 @@ export default function Post({ post }: { post: PostResponse }) {
       />
     </>
   );
-}
+};
 
 const LikeButton = ({ postId }: { postId: number }) => {
   const { user } = useUser();

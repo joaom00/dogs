@@ -1,4 +1,6 @@
-import { Post, Spinner, Suggestions } from '@/components';
+import { Post } from '@components/Post';
+import { Spinner } from '@components/Spinner';
+import { Suggestions } from '@components/Suggestions';
 
 import { usePosts } from './queries';
 

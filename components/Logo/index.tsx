@@ -7,7 +7,7 @@ type LogoProps = {
   size?: 'normal' | 'large';
 };
 
-const Logo = ({ color = 'black', size = 'normal' }: LogoProps) => {
+export const Logo = ({ color = 'black', size = 'normal' }: LogoProps) => {
   return (
     <Link href="/" passHref>
       <S.Wrapper color={color} size={size}>
@@ -31,5 +31,3 @@ const Logo = ({ color = 'black', size = 'normal' }: LogoProps) => {
     </Link>
   );
 };
-
-export default Logo;

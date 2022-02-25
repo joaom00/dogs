@@ -4,7 +4,7 @@ type SpinnerProps = {
   size?: number;
 };
 
-export default function Spinner({ size = 14 }: SpinnerProps) {
+export const Spinner = ({ size = 14 }: SpinnerProps) => {
   return (
     <S.Wrapper size={size} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
       <circle
@@ -22,4 +22,4 @@ export default function Spinner({ size = 14 }: SpinnerProps) {
       ></path>
     </S.Wrapper>
   );
-}
+};

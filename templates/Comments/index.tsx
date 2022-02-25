@@ -5,11 +5,11 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/context/AuthContext';
 
 import { ArrowLeftIcon } from '@/icons';
-import { useAddComment, useComments, usePost } from '@/components/PostDialog/queries';
-import { Avatar, AvatarFallback } from '@/components/Avatar';
+import { useAddComment, useComments, usePost } from '@components/PostDialog/queries';
+import { Avatar, AvatarFallback } from '@components/Avatar';
+import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
-import { Spinner } from '@/components';
 
 const Comments = () => {
   const { user } = useUser();

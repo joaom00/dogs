@@ -1,13 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 
-import { FollowButton, UnfollowButton, Spinner } from '@/components';
+import { FollowButton } from '@/components/FollowButton';
+import { UnfollowButton } from '@/components/UnfollowButton';
+import { Spinner } from '@/components/Spinner';
 
 import { useUserSuggestions } from './queries';
 
 import * as S from './styles';
 
-const Suggestions = () => {
+export const Suggestions = () => {
   const users = useUserSuggestions();
 
   return (
@@ -52,5 +54,3 @@ const FollowUnfollowButton = ({ username }: FollowUnfollowButtonProps) => {
 
   return <FollowButton username={username} onFollowChange={setIsFollowed} />;
 };
-
-export default Suggestions;

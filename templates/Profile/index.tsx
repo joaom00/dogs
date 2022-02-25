@@ -6,7 +6,11 @@ import toast from 'react-hot-toast';
 import { useUser } from '@/context/AuthContext';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
-import { FollowDialog, FollowButton, UnfollowButton, Logo, PostDialog } from '@/components';
+import { FollowDialog } from '@components/FollowDialog';
+import { FollowButton } from '@components/FollowButton';
+import { UnfollowButton } from '@components/UnfollowButton';
+import { Logo } from '@components/Logo';
+import { PostDialog } from '@components/PostDialog';
 
 import { Avatar, AvatarFallback } from '@/components/Avatar';
 

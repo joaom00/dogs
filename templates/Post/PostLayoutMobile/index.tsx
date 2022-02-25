@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/context/AuthContext';
 
 import { ChatIcon, HeartIcon } from '@/icons';
-import { usePost, useAddLike, useDeleteLike } from '@/components/PostDialog/queries';
+import { usePost, useAddLike, useDeleteLike } from '@components/PostDialog/queries';
 
 import * as S from './styles';
 

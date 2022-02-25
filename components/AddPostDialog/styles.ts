@@ -50,10 +50,14 @@ export const DialogTitleWrapper = styled.div`
 
 export const DialogTitle = styled(Title)`
   ${({ theme }) => css`
-    font-size: ${theme.font.sizes.medium};
+    font-size: ${theme.font.sizes.small};
     font-weight: ${theme.font.medium};
     color: ${theme.colors.sand12};
     grid-column-start: 2;
+
+    @media ${theme.media.greaterThan('medium')} {
+      font-size: ${theme.font.sizes.medium};
+    }
   `}
 `;
 
@@ -66,6 +70,11 @@ export const SendButton = styled.button`
     display: flex;
     align-items: center;
     gap: ${theme.space.xs};
+    font-size: ${theme.font.sizes.small};
+
+    @media ${theme.media.greaterThan('medium')} {
+      font-size: ${theme.font.sizes.medium};
+    }
   `}
 `;
 
@@ -75,6 +84,7 @@ export const DialogContent = styled(Content)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 932px;
+  max-width: 100%;
   height: 547px;
 
   background-color: white;
@@ -101,9 +111,15 @@ export const DialogContent = styled(Content)`
 `;
 
 export const DialogContentMain = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  height: 100%;
+  ${({ theme }) => css`
+    display: grid;
+    grid-template-columns: 1fr;
+    height: 100%;
+
+    @media ${theme.media.greaterThan('medium')} {
+      grid-template-columns: 1fr 1fr;
+    }
+  `}
 `;
 
 export const DialogLeftContentMain = styled.div`
@@ -113,7 +129,11 @@ export const DialogLeftContentMain = styled.div`
 export const DialogRightContentMain = styled.div`
   ${({ theme }) => css`
     height: 100%;
-    border-left: 1px solid ${theme.colors.sand6};
+    border-top: 1px solid ${theme.colors.sand6};
+
+    @media ${theme.media.greaterThan('medium')} {
+      border-left: 1px solid ${theme.colors.sand6};
+    }
   `}
 `;
 

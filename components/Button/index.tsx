@@ -8,7 +8,7 @@ type ButtonProps = {
   children: React.ReactNode;
 } & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'small', children, ...props }, forwardedRef) => (
     <S.Wrapper type="button" variant={variant} size={size} {...props} ref={forwardedRef}>
       {children}
@@ -17,5 +17,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 
 Button.displayName = 'Button';
-
-export default Button;

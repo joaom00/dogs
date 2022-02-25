@@ -7,12 +7,14 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { HomeIcon } from '@/icons';
-import { Logo, AddPostDialog, DropdownMenu } from '@/components';
-import { Avatar, AvatarFallback } from '@/components/Avatar';
+import { Logo } from '@components/Logo';
+import { AddPostDialog } from '@components/AddPostDialog';
+import * as DropdownMenu from '@components/DropdownMenu';
+import { Avatar, AvatarFallback } from '@components/Avatar';
 
 import * as S from './styles';
 
-const Header = () => {
+export const Header = () => {
   const { user } = useUser();
 
   const router = useRouter();
@@ -103,5 +105,3 @@ const Header = () => {
     </>
   );
 };
-
-export default Header;

@@ -5,14 +5,14 @@ import { CloseIcon } from '@/icons';
 
 import * as S from './styles';
 
-export default function Dialog({ children, ...props }: DialogProps) {
+const Dialog = ({ children, ...props }: DialogProps) => {
   return (
     <Root {...props}>
       <S.DialogOverlay />
       {children}
     </Root>
   );
-}
+};
 
 const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
   ({ children, ...props }, forwardedRef) => (
@@ -39,5 +39,4 @@ const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
 
 DialogContent.displayName = 'DialogContent';
 
-Dialog.Title = DialogTitle;
-Dialog.Content = DialogContent;
+export { Dialog as Root, DialogTitle as Title, DialogContent as Content };

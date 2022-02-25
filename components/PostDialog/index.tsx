@@ -7,7 +7,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useUser } from '@/context/AuthContext';
 
 import { ChatIcon, CloseIcon, HeartIcon } from '@/icons';
-import { Spinner } from '@/components';
+import { Spinner } from '@components/Spinner';
 import { Avatar, AvatarFallback } from '@/components/Avatar';
 
 import { usePost, useComments, useAddComment, useAddLike, useDeleteLike } from './queries';
@@ -19,7 +19,12 @@ type PostDialogProps = {
   returnHref?: string;
 } & DialogPrimitive.DialogProps;
 
-const PostDialog: React.FC<PostDialogProps> = ({ children, postId, returnHref, ...props }) => {
+export const PostDialog: React.FC<PostDialogProps> = ({
+  children,
+  postId,
+  returnHref,
+  ...props
+}) => {
   const { user } = useUser();
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -220,5 +225,3 @@ const UnlikeButton = ({ postId }: { postId: number }) => {
     </button>
   );
 };
-
-export default PostDialog;

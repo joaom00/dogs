@@ -6,10 +6,10 @@ import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { supabase } from '@/lib/supabase';
 
-import { Dialog } from '@/components';
+import { Spinner } from '@components/Spinner';
+import * as Dialog from '@components/Dialog';
 
 import * as S from './styles';
-import Spinner from '../Spinner';
 
 type FollowResponse = Array<{
   follow: {
@@ -28,7 +28,7 @@ const querys = {
   following: 'follow:followed_username(name, username, avatar_url)',
 };
 
-const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
+export const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
   const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
@@ -47,7 +47,7 @@ const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
   });
 
   return (
-    <Dialog open={open} onOpenChange={setOpen} {...props}>
+    <Dialog.Root open={open} onOpenChange={setOpen} {...props}>
       <DialogPrimitive.Trigger asChild>{children}</DialogPrimitive.Trigger>
       <Dialog.Content>
         <Dialog.Title>{type === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
@@ -84,8 +84,6 @@ const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
           </S.FollowWrapper>
         ))}
       </Dialog.Content>
-    </Dialog>
+    </Dialog.Root>
   );
 };
-
-export default FollowDialog;

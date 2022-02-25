@@ -4,14 +4,15 @@ import toast from 'react-hot-toast';
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
-import { Button, Spinner } from '@/components';
+import { Button } from '@components/Button';
+import { Spinner } from '@components/Spinner';
 
 type FollowButtonProps = {
   username: string;
   onFollowChange: (followed: boolean) => void;
 };
 
-export default function FollowButton({ username, onFollowChange }: FollowButtonProps) {
+export const FollowButton = ({ username, onFollowChange }: FollowButtonProps) => {
   const { user } = useUser();
 
   const queryClient = useQueryClient();
@@ -48,4 +49,4 @@ export default function FollowButton({ username, onFollowChange }: FollowButtonP
       Seguir
     </Button>
   );
-}
+};

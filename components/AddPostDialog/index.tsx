@@ -7,7 +7,8 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { CloseIcon } from '@/icons';
-import { FileInput, Spinner } from '@/components';
+import { FileInput } from '@components/FileInput';
+import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -16,7 +17,7 @@ type FormValues = {
   files: Array<File>;
 };
 
-const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
+export const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
   const { user } = useUser();
   const queryClient = useQueryClient();
   const methods = useForm<FormValues>({ shouldUnregister: true });
@@ -95,5 +96,3 @@ const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
     </DialogPrimitive.Root>
   );
 };
-
-export default AddPostDialog;

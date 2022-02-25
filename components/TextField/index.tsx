@@ -8,7 +8,7 @@ type TextFieldProps = {
   name: Path<Record<string, string>>;
 } & InputHTMLAttributes<HTMLInputElement>;
 
-export default function TextField({ label, name, ...props }: TextFieldProps) {
+export const TextField = ({ label, name, ...props }: TextFieldProps) => {
   const {
     register,
     formState: { errors },
@@ -30,4 +30,4 @@ export default function TextField({ label, name, ...props }: TextFieldProps) {
       />
     </S.Wrapper>
   );
-}
+};

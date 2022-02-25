@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { ThemeProvider } from 'styled-components';
 import { Toaster } from 'react-hot-toast';
 
-import Header from '@/components/Header';
+import { Header } from '@components/Header';
 import Providers from '@/context';
 
 import GlobalStyles from 'styles/global';

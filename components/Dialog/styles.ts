@@ -28,6 +28,7 @@ export const DialogContent = styled(Content)`
   left: 50%;
   transform: translate(-50%, -50%);
   width: 400px;
+  max-width: 100%;
   height: 300px;
 
   background-color: white;
