@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { QueryFunctionContext, useMutation, useQuery, useQueryClient } from 'react-query';
+import { QueryFunctionContext, useQuery } from 'react-query';
 
 import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
@@ -92,38 +92,5 @@ export const useProfilePosts = () => {
 
   return useQuery([{ scope: 'profile', type: 'posts', username }], getUserPosts, {
     staleTime: Infinity,
-  });
-};
-
-/* -------------------------------------------------------------------------------------------------
- * useUploadFile
- * -----------------------------------------------------------------------------------------------*/
-
-const uploadFile = async ({ file, username }: { file: File; username: string }) => {
-  await supabase.storage.from(`avatars`).upload(`${username}-${file.name}`, file);
-
-  const { publicURL } = supabase.storage.from(`avatars`).getPublicUrl(`${username}-${file.name}`);
-
-  await supabase.from('profiles').update({ avatar_url: publicURL }).match({ username });
-};
-
-export const useUploadFile = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation(uploadFile, {
-    onMutate: ({ file, username }) => {
-      const key = [{ scope: 'profile', username }];
-
-      const userLoggedData = queryClient.getQueryData<ProfileResponse>(key);
-
-      queryClient.setQueryData(key, () => ({
-        ...userLoggedData,
-        avatar_url: URL.createObjectURL(file),
-      }));
-
-      queryClient.setQueryData(['header_image'], () => ({
-        avatar_url: URL.createObjectURL(file),
-      }));
-    },
   });
 };

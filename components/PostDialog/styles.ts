@@ -1,9 +1,8 @@
 import styled, { css } from 'styled-components';
 
-import { Overlay, Content, Close } from '@radix-ui/react-dialog';
-import { AvatarImage } from '@radix-ui/react-avatar';
+import * as Dialog from '@radix-ui/react-dialog';
 
-export const DialogOverlay = styled(Overlay)`
+export const DialogOverlay = styled(Dialog.Overlay)`
   background-color: rgba(0, 0, 0, 0.85);
   position: fixed;
   inset: 0;
@@ -23,7 +22,7 @@ export const DialogOverlay = styled(Overlay)`
   }
 `;
 
-export const DialogContent = styled(Content)`
+export const DialogContent = styled(Dialog.Content)`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -54,7 +53,7 @@ export const DialogContent = styled(Content)`
   }
 `;
 
-export const DialogClose = styled(Close)`
+export const DialogClose = styled(Dialog.Close)`
   ${({ theme }) => css`
     padding: ${theme.space.xs};
     display: grid;
@@ -108,22 +107,6 @@ export const PostContentHeader = styled.header`
       font-weight: ${theme.font.bold};
     }
   `}
-`;
-
-export const PostContentHeaderImage = styled(AvatarImage)`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
-`;
-
-export const PostContentHeaderImageFallback = styled.img`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
 `;
 
 export const PostContentComments = styled.div`

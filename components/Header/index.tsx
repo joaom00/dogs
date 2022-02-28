@@ -9,8 +9,8 @@ import { useUser } from '@/context/AuthContext';
 import { HomeIcon } from '@/icons';
 import { Logo } from '@components/Logo';
 import { AddPostDialog } from '@components/AddPostDialog';
+import { Avatar } from '@components/Avatar';
 import * as DropdownMenu from '@components/DropdownMenu';
-import { Avatar, AvatarFallback } from '@components/Avatar';
 
 import * as S from './styles';
 
@@ -61,15 +61,11 @@ export const Header = () => {
             <li>
               <DropdownMenu.Root open={openDropdown} onOpenChange={setOpenDropdown}>
                 <DropdownMenu.Trigger>
-                  <Avatar>
-                    <S.AvatarImage
-                      src={profileAvatar.data?.avatar_url}
-                      alt={`Foto de perfil de ${user?.user_metadata.username}`}
-                    />
-                    <AvatarFallback>
-                      <S.AvatarFallback />
-                    </AvatarFallback>
-                  </Avatar>
+                  <Avatar
+                    src={profileAvatar.data?.avatar_url}
+                    alt={`Foto de perfil de ${user?.user_metadata.username}`}
+                    size={24}
+                  />
                 </DropdownMenu.Trigger>
 
                 <DropdownMenu.Content sideOffset={5} hidden={isAddPostOpen}>

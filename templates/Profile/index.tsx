@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import toast from 'react-hot-toast';
 
 import { useUser } from '@/context/AuthContext';
+import { useUploadAvatar } from '@/lib/useUploadAvatar';
 
 import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
 import { FollowDialog } from '@components/FollowDialog';
@@ -11,10 +12,9 @@ import { FollowButton } from '@components/FollowButton';
 import { UnfollowButton } from '@components/UnfollowButton';
 import { Logo } from '@components/Logo';
 import { PostDialog } from '@components/PostDialog';
+import { Avatar } from '@components/Avatar';
 
-import { Avatar, AvatarFallback } from '@/components/Avatar';
-
-import { useProfile, useUploadFile, useProfilePosts } from './queries';
+import { useProfile, useProfilePosts } from './queries';
 
 import * as S from './styles';
 
@@ -28,7 +28,7 @@ const ProfileTemplate = () => {
 
   const profile = useProfile();
   const profilePosts = useProfilePosts();
-  const uploadFile = useUploadFile();
+  const uploadAvatar = useUploadAvatar();
 
   const [hasFollowed, setHasFollowed] = React.useState(profile.data?.hasFollowed);
 
@@ -43,7 +43,7 @@ const ProfileTemplate = () => {
 
     const file = event.target.files[0];
 
-    uploadFile.mutate(
+    uploadAvatar.mutate(
       { file, username: user?.user_metadata.username },
       {
         onSuccess: () => {
@@ -70,23 +70,19 @@ const ProfileTemplate = () => {
   return (
     <>
       <S.ProfileWrapper>
-        <S.ProfileImageWrapper>
-          <Avatar>
-            <S.ProfileImage
-              src={profile.data.avatar_url}
-              alt={`Foto de perfil de ${profile.data.username}`}
-            />
-            <AvatarFallback>
-              <S.ProfileImageFallback />
-            </AvatarFallback>
-          </Avatar>
+        <S.ProfileAvatarWrapper>
+          <Avatar
+            src={profile.data.avatar_url}
+            alt={`Foto de perfil de ${profile.data.username}`}
+            size={84}
+          />
           <input
             type="file"
             accept="image/jpg, image/png, image/jpeg"
             onChange={onFileChange}
             style={{ display: 'none' }}
           />
-        </S.ProfileImageWrapper>
+        </S.ProfileAvatarWrapper>
         <S.ProfileInfo>
           <S.ProfileUsername>{profile.data.username}</S.ProfileUsername>
           {!!user &&

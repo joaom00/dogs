@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { AvatarImage } from '@/components/Avatar';
 
 export const ProfileWrapper = styled.section`
   ${({ theme }) => css`
@@ -31,40 +30,8 @@ export const ProfileWrapper = styled.section`
   `}
 `;
 
-export const ProfileImageWrapper = styled.label`
+export const ProfileAvatarWrapper = styled.label`
   grid-area: profileImage;
-`;
-
-export const ProfileImage = styled(AvatarImage)`
-  ${({ theme }) => css`
-      width: 8.4rem;
-      height: 8.4rem;
-      object-fit: cover;
-      border-radius: 9999px;
-      cursor: pointer;
-
-      @media ${theme.media.greaterThan('small')} {
-        width: 18.4rem;
-        height: 18.4rem;
-      }
-    }
-  `}
-`;
-
-export const ProfileImageFallback = styled.img`
-  ${({ theme }) => css`
-      width: 8.4rem;
-      height: 8.4rem;
-      object-fit: cover;
-      border-radius: 9999px;
-      cursor: pointer;
-
-      @media ${theme.media.greaterThan('small')} {
-        width: 18.4rem;
-        height: 18.4rem;
-      }
-    }
-  `}
 `;
 
 export const ProfileInfo = styled.div`

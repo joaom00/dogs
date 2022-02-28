@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { AvatarImage as AvatarImageComp } from '@/components/Avatar';
 
 export const Wrapper = styled.header`
   ${({ theme }) => css`
@@ -27,16 +26,4 @@ export const NavList = styled.ul`
     align-items: center;
     gap: ${theme.space.md};
   `}
-`;
-
-export const AvatarImage = styled(AvatarImageComp)`
-  width: 2.4rem;
-  height: 2.4rem;
-  object-fit: cover;
-`;
-
-export const AvatarFallback = styled.img`
-  width: 2.4rem;
-  height: 2.4rem;
-  object-fit: cover;
 `;

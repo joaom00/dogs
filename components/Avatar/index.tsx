@@ -1,27 +1,66 @@
 import React from 'react';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
+import styled, { css, DefaultTheme } from 'styled-components';
 
-type AvatarProps = AvatarPrimitive.PrimitiveImageProps;
+import { ProfileAvatarWrapper } from '@/templates/Profile/styles';
+import { PostContentHeader } from '@components/PostDialog/styles';
 
-export const Avatar = (props: AvatarProps) => {
-  return <AvatarPrimitive.Root {...props} />;
+type AvatarProps = {
+  src?: string;
+  alt?: string;
+  srcFallback?: string;
+  size: number;
 };
 
-type AvatarImageProps = AvatarPrimitive.PrimitiveImageProps;
-
-export const AvatarImage = (props: AvatarImageProps) => {
-  return <AvatarPrimitive.Image {...props} />;
+export const Avatar = ({
+  src,
+  alt,
+  srcFallback = 'https://schveufltdgsfxvyzrwb.supabase.in/storage/v1/object/public/avatars/user.jpg',
+  size,
+}: AvatarProps) => {
+  return (
+    <AvatarPrimitive.Root>
+      <AvatarImage src={src} alt={alt} size={size} />
+      <AvatarPrimitive.Fallback>
+        <AvatarFallback src={srcFallback} size={size} />
+      </AvatarPrimitive.Fallback>
+    </AvatarPrimitive.Root>
+  );
 };
 
-type AvatarFallbackProps = AvatarPrimitive.AvatarFallbackProps;
+const AvatarImage = styled(AvatarPrimitive.Image)<{ size: number }>`
+  ${({ theme, size }) => css`
+    width: ${size}px;
+    height: ${size}px;
+    border-radius: 9999px;
+    object-fit: cover;
+    cursor: pointer;
 
-export const AvatarFallback = ({ children, ...props }: AvatarFallbackProps) => {
-  const child = React.Children.only(children) as React.ReactElement;
+    ${composeStyles(theme)}
+  `}
+`;
 
-  const comp = React.cloneElement(child, {
-    src: 'https://schveufltdgsfxvyzrwb.supabase.in/storage/v1/object/public/avatars/user.jpg',
-    ...child.props,
-  });
+const AvatarFallback = styled.img<{ size: number }>`
+  ${({ theme, size }) => css`
+    width: ${size}px;
+    height: ${size}px;
+    border-radius: 9999px;
+    object-fit: cover;
+    cursor: pointer;
 
-  return <AvatarPrimitive.Fallback {...props}>{comp}</AvatarPrimitive.Fallback>;
-};
+    ${composeStyles(theme)}
+  `}
+`;
+
+const composeStyles = (theme: DefaultTheme) => css`
+  ${ProfileAvatarWrapper} & {
+    @media ${theme.media.greaterThan('small')} {
+      width: 18.4rem;
+      height: 18.4rem;
+    }
+  }
+
+  ${PostContentHeader} & {
+    flex-shrink: 0;
+  }
+`;
