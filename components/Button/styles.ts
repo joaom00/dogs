@@ -3,10 +3,11 @@ import styled, { css, DefaultTheme } from 'styled-components';
 import { ProfileInfo } from '@/templates/Profile/styles';
 import { SignUpWrapper } from '@/templates/SignUp/styles';
 import { SignInWrapper } from '@/templates/SignIn/styles';
+import { Wrapper as EditProfileWrapper } from '@/templates/EditProfile/styles';
 
 type WrapperProps = {
   variant: 'primary' | 'secondary';
-  size: 'small' | 'medium';
+  size: 'small' | 'medium' | 'large';
 };
 
 const modifiers = {
@@ -43,6 +44,11 @@ const modifiers = {
   medium: (theme: DefaultTheme) => css`
     padding: 1.2rem ${theme.space.md};
   `,
+
+  large: (theme: DefaultTheme) => css`
+    padding: 1.2rem ${theme.space.lg};
+    width: 28.4rem;
+  `,
 };
 
 export const Wrapper = styled.button<WrapperProps>`
@@ -65,6 +71,11 @@ export const Wrapper = styled.button<WrapperProps>`
       max-width: 40rem;
       width: 100%;
       margin-top: ${theme.space.sm};
+    }
+
+    ${EditProfileWrapper} & {
+      margin-left: auto;
+      margin-top: ${theme.space.md};
     }
 
     @media ${theme.media.lessThan('medium')} {

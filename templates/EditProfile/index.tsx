@@ -1,20 +1,18 @@
 import React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
+import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
 import * as yup from 'yup';
 
 import { supabase } from '@/lib/supabase';
-import { useUser } from '@/context/AuthContext';
-
 import { useYupValidationResolver } from '@/hooks';
 
 import { Button } from '@/components/Button';
 import { Avatar } from '@components/Avatar';
 
-import * as S from './styles';
-
 import { useProfileEdit, useUpdateProfile } from './queries';
-import { PostgrestFilterBuilder } from '@supabase/postgrest-js';
-import toast from 'react-hot-toast';
+
+import * as S from './styles';
 
 type FormValues = {
   username: string;
@@ -30,9 +28,7 @@ const validationSchema = yup.object({
 });
 
 export const EditProfile = () => {
-  const { user } = useUser();
-
-  const profile = useProfileEdit(user?.user_metadata.username);
+  const profile = useProfileEdit();
   const updateProfile = useUpdateProfile();
 
   const resolver = useYupValidationResolver(validationSchema);
@@ -46,22 +42,14 @@ export const EditProfile = () => {
     },
   });
 
-  function isFileList(input: FileList | string): input is FileList {
-    if (typeof input !== 'string') {
-      return !!input?.item(0)?.name;
-    }
+  function getFilePreview() {
+    const avatar = methods.getValues('avatar_url') as unknown as FileList;
 
-    return false;
-  }
-
-  function getFile() {
-    const avatar: FileList | string = methods.getValues('avatar_url');
-
-    if (isFileList(avatar)) {
+    if (avatar?.length > 0) {
       return URL.createObjectURL(avatar.item(0) as Blob);
     }
 
-    return avatar;
+    return profile.data?.avatar_url;
   }
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
@@ -126,7 +114,7 @@ export const EditProfile = () => {
   return (
     <S.Wrapper>
       <label>
-        <Avatar src={getFile()} alt="sua foto de perfil" size={184} />
+        <Avatar src={getFilePreview()} alt="sua foto de perfil" size={184} />
         <input
           type="file"
           accept="image/jpg, image/png, image/jpeg"

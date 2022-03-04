@@ -5,7 +5,6 @@ import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { Button } from '@components/Button';
-import { Spinner } from '@components/Spinner';
 
 type FollowButtonProps = {
   username: string;
@@ -44,8 +43,11 @@ export const FollowButton = ({ username, onFollowChange }: FollowButtonProps) =>
   }
 
   return (
-    <Button onClick={onSubmit} disabled={followMutation.isLoading}>
-      {followMutation.isLoading && <Spinner />}
+    <Button
+      onClick={onSubmit}
+      disabled={followMutation.isLoading}
+      loading={followMutation.isLoading}
+    >
       Seguir
     </Button>
   );

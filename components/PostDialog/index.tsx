@@ -1,10 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import ReactTimeAgo from 'react-time-ago';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { useUser } from '@/context/AuthContext';
+import { formatDate } from '@/lib/formatDate';
 
 import { ChatIcon, CloseIcon, HeartIcon } from '@/icons';
 import { Spinner } from '@components/Spinner';
@@ -148,9 +148,7 @@ export const PostDialog: React.FC<PostDialogProps> = ({
 
                     <S.PostLikes>{post.data?.likesCount?.[0].count} curtidas</S.PostLikes>
 
-                    <S.PostDate>
-                      <ReactTimeAgo date={new Date(post.data?.created_at as string)} />
-                    </S.PostDate>
+                    <S.PostDate>{formatDate(post.data?.created_at)}</S.PostDate>
                   </S.PostContentActions>
 
                   <S.PostCommentForm>

@@ -11,8 +11,9 @@ import type { PostResponse } from '@/templates/Home/queries';
 import { useAddLike, useDeleteLike } from './queries';
 
 import * as S from './styles';
+import { formatDate } from '@/lib/formatDate';
 
-export const Post = ({ post }: { post: PostResponse }) => {
+export const HomePost = ({ post }: { post: PostResponse }) => {
   const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
   const router = useRouter();
   const returnHref = React.useRef(router.asPath);
@@ -81,7 +82,7 @@ export const Post = ({ post }: { post: PostResponse }) => {
           </Link>
         )}
 
-        <S.PostCreatedInfo>há 1 dia</S.PostCreatedInfo>
+        <S.PostCreatedInfo>{formatDate(post.created_at)}</S.PostCreatedInfo>
       </S.Wrapper>
 
       <PostDialog

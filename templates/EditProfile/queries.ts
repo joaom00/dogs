@@ -1,7 +1,8 @@
+import { useUser } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { QueryFunctionContext, useMutation, useQuery, useQueryClient } from 'react-query';
+import { QueryFunctionContext, useMutation, useQuery } from 'react-query';
 
-type Key = {
+type QueryKey = {
   scope: string;
   type: string;
   username: string;
@@ -16,7 +17,7 @@ type UserResponse = {
   bio: string;
 };
 
-export const getProfile = async ({ queryKey }: QueryFunctionContext<Key>) => {
+export const getProfile = async ({ queryKey }: QueryFunctionContext<QueryKey>) => {
   const [{ username }] = queryKey;
 
   const response = await supabase
@@ -31,7 +32,10 @@ export const getProfile = async ({ queryKey }: QueryFunctionContext<Key>) => {
   return response.data[0];
 };
 
-export const useProfileEdit = (username: string) => {
+export const useProfileEdit = () => {
+  const { user } = useUser();
+  const username = user?.user_metadata.username;
+
   return useQuery([{ scope: 'profile', type: 'edit', username }], getProfile);
 };
 

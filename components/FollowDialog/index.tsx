@@ -20,7 +20,7 @@ type FollowResponse = Array<{
 }>;
 
 type FollowDialogProps = DialogPrimitive.DialogProps & {
-  type: 'followers' | 'following';
+  scope: 'followers' | 'following';
 };
 
 const querys = {
@@ -28,7 +28,7 @@ const querys = {
   following: 'follow:followed_username(name, username, avatar_url)',
 };
 
-export const FollowDialog = ({ children, type, ...props }: FollowDialogProps) => {
+export const FollowDialog = ({ children, scope, ...props }: FollowDialogProps) => {
   const router = useRouter();
 
   const [open, setOpen] = React.useState(false);
@@ -36,13 +36,13 @@ export const FollowDialog = ({ children, type, ...props }: FollowDialogProps) =>
   async function getFollows(): Promise<FollowResponse | null> {
     const res = await supabase
       .from('follows')
-      .select(querys[type])
-      .eq(type === 'followers' ? 'followed_username' : 'follower_username', router.query.username);
+      .select(querys[scope])
+      .eq(scope === 'followers' ? 'followed_username' : 'follower_username', router.query.username);
 
     return res.data;
   }
 
-  const followQuery = useQuery([{ scope: type, username: router.query.username }], getFollows, {
+  const followQuery = useQuery([{ scope, username: router.query.username }], getFollows, {
     enabled: open,
   });
 
@@ -50,7 +50,7 @@ export const FollowDialog = ({ children, type, ...props }: FollowDialogProps) =>
     <Dialog.Root open={open} onOpenChange={setOpen} {...props}>
       <DialogPrimitive.Trigger asChild>{children}</DialogPrimitive.Trigger>
       <Dialog.Content>
-        <Dialog.Title>{type === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
+        <Dialog.Title>{scope === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
 
         {followQuery.isLoading && (
           <S.SpinnerWrapper>
@@ -60,7 +60,7 @@ export const FollowDialog = ({ children, type, ...props }: FollowDialogProps) =>
 
         {followQuery.data?.length === 0 && (
           <S.NoFollow>
-            {type === 'followers'
+            {scope === 'followers'
               ? 'Você não possui nenhum seguidor'
               : 'Você não está seguindo ninguém'}
           </S.NoFollow>

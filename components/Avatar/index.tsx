@@ -1,28 +1,29 @@
 import React from 'react';
-import * as AvatarPrimitive from '@radix-ui/react-avatar';
 import styled, { css, DefaultTheme } from 'styled-components';
+import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
 import { ProfileAvatarWrapper } from '@/templates/Profile/styles';
+import { PostContent } from '@/templates/Post/PostLayoutDesktop/styles';
 import { PostContentHeader } from '@components/PostDialog/styles';
 
 type AvatarProps = {
   src?: string;
   alt?: string;
-  srcFallback?: string;
+  fallbackSrc?: string;
   size: number;
 };
 
 export const Avatar = ({
   src,
   alt,
-  srcFallback = 'https://schveufltdgsfxvyzrwb.supabase.in/storage/v1/object/public/avatars/user.jpg',
+  fallbackSrc = 'https://schveufltdgsfxvyzrwb.supabase.in/storage/v1/object/public/avatars/user.jpg',
   size,
 }: AvatarProps) => {
   return (
     <AvatarPrimitive.Root>
       <AvatarImage src={src} alt={alt} size={size} />
       <AvatarPrimitive.Fallback>
-        <AvatarFallback src={srcFallback} size={size} />
+        <AvatarFallback src={fallbackSrc} size={size} />
       </AvatarPrimitive.Fallback>
     </AvatarPrimitive.Root>
   );
@@ -60,7 +61,7 @@ const composeStyles = (theme: DefaultTheme) => css`
     }
   }
 
-  ${PostContentHeader} & {
+  ${PostContentHeader} &, ${PostContent} & {
     flex-shrink: 0;
   }
 `;

@@ -1,11 +1,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import ReactTimeAgo from 'react-time-ago';
 
 import { ChatIcon, HeartIcon } from '@/icons';
 import { Spinner } from '@components/Spinner';
-import { Avatar, AvatarFallback } from '@components/Avatar';
+import { Avatar } from '@components/Avatar';
 import {
   useAddLike,
   useDeleteLike,
@@ -15,6 +14,7 @@ import {
 } from '@components/PostDialog/queries';
 
 import { useUser } from '@/context/AuthContext';
+import { formatDate } from '@/lib/formatDate';
 
 import * as S from './styles';
 
@@ -76,15 +76,11 @@ const PostLayoutDesktop = () => {
               <S.PostContentHeader>
                 <Link href={`/${post.data?.user.username}`}>
                   <a>
-                    <Avatar>
-                      <S.PostContentHeaderImage
-                        src={post.data?.user.avatar_url}
-                        alt={`Foto de perfil de ${post.data?.user.username}`}
-                      />
-                      <AvatarFallback>
-                        <S.PostContentHeaderImageFallback />
-                      </AvatarFallback>
-                    </Avatar>
+                    <Avatar
+                      src={post.data?.user.avatar_url}
+                      alt={`Foto de perfil de ${post.data?.user.username}`}
+                      size={32}
+                    />
                   </a>
                 </Link>
 
@@ -99,15 +95,11 @@ const PostLayoutDesktop = () => {
                 <S.PostContentDescription>
                   <Link href={`/${post.data?.user.username}`}>
                     <a>
-                      <Avatar>
-                        <S.PostContentHeaderImage
-                          src={post.data?.user.avatar_url}
-                          alt={`Foto de perfil de ${post.data?.user.username}`}
-                        />
-                        <AvatarFallback>
-                          <S.PostContentHeaderImageFallback />
-                        </AvatarFallback>
-                      </Avatar>
+                      <Avatar
+                        src={post.data?.user.avatar_url}
+                        alt={`Foto de perfil de ${post.data?.user.username}`}
+                        size={32}
+                      />
                     </a>
                   </Link>
 
@@ -125,15 +117,11 @@ const PostLayoutDesktop = () => {
                   <S.PostContentDescription key={comment.id}>
                     <Link href={`/${comment.user.username}`}>
                       <a>
-                        <Avatar>
-                          <S.PostContentHeaderImage
-                            src={comment.user.avatar_url}
-                            alt={`Foto de perfil de ${comment.user.username}`}
-                          />
-                          <AvatarFallback>
-                            <S.PostContentHeaderImageFallback />
-                          </AvatarFallback>
-                        </Avatar>
+                        <Avatar
+                          src={post.data?.user.avatar_url}
+                          alt={`Foto de perfil de ${post.data?.user.username}`}
+                          size={32}
+                        />
                       </a>
                     </Link>
 
@@ -162,9 +150,7 @@ const PostLayoutDesktop = () => {
 
                 <S.PostLikes>{post.data?.likesCount?.[0].count} curtidas</S.PostLikes>
 
-                <S.PostDate>
-                  <ReactTimeAgo date={new Date(post.data?.created_at as string)} />
-                </S.PostDate>
+                <S.PostDate>{formatDate(post.data?.created_at)}</S.PostDate>
               </S.PostContentActions>
 
               <S.PostCommentForm onSubmit={onSubmit}>

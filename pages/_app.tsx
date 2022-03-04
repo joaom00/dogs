@@ -12,12 +12,6 @@ import Providers from '@/context';
 import GlobalStyles from 'styles/global';
 import theme from '../styles/theme';
 
-import TimeAgo from 'javascript-time-ago';
-
-import pt from 'javascript-time-ago/locale/pt.json';
-
-TimeAgo.addDefaultLocale(pt);
-
 type AppProps = NextAppProps & {
   Component: NextPage & {
     withHeader?: boolean;

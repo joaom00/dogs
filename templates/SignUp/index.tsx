@@ -13,7 +13,6 @@ import { messageMapper } from '@/utils';
 
 import { Button } from '@components/Button';
 import { TextField } from '@components/TextField';
-import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -131,8 +130,7 @@ export default function SignUpTemplate() {
 
           <TextField name="confirm_password" label="Confirmar senha" type="password" />
 
-          <Button type="submit" size="medium">
-            {status === 'loading' && <Spinner />}
+          <Button type="submit" size="medium" loading={status === 'loading'}>
             Criar conta
           </Button>
 

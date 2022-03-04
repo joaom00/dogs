@@ -1,19 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/router';
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form';
-import toast from 'react-hot-toast';
 import * as yup from 'yup';
 
 import { supabase } from '@/lib/supabase';
-
 import { useYupValidationResolver } from '@/hooks';
 import { messageMapper } from '@/utils';
 
 import { Button } from '@components/Button';
 import { TextField } from '@components/TextField';
-import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -61,8 +59,7 @@ export default function SignInTemplate() {
 
           <TextField name="password" type="password" label="Senha" />
 
-          <Button type="submit" size="medium">
-            {status === 'loading' && <Spinner />}
+          <Button type="submit" size="medium" loading={status === 'loading'}>
             Entrar
           </Button>
 

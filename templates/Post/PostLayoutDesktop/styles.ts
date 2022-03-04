@@ -1,7 +1,5 @@
 import styled, { css } from 'styled-components';
 
-import { AvatarImage } from '@radix-ui/react-avatar';
-
 export const PostDesktop = styled.div`
   ${({ theme }) => css`
     max-width: 80vw;
@@ -59,22 +57,6 @@ export const PostContentHeader = styled.header`
       font-weight: ${theme.font.bold};
     }
   `}
-`;
-
-export const PostContentHeaderImage = styled(AvatarImage)`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
-`;
-
-export const PostContentHeaderImageFallback = styled.img`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
 `;
 
 export const PostContentComments = styled.div`

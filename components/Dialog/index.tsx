@@ -1,20 +1,20 @@
 import React from 'react';
-import { DialogProps, DialogContentProps, DialogTitleProps, Root } from '@radix-ui/react-dialog';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 
 import { CloseIcon } from '@/icons';
 
 import * as S from './styles';
 
-const Dialog = ({ children, ...props }: DialogProps) => {
+const Dialog = ({ children, ...props }: DialogPrimitive.DialogProps) => {
   return (
-    <Root {...props}>
+    <DialogPrimitive.Root {...props}>
       <S.DialogOverlay />
       {children}
-    </Root>
+    </DialogPrimitive.Root>
   );
 };
 
-const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
+const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogPrimitive.DialogTitleProps>(
   ({ children, ...props }, forwardedRef) => (
     <S.DialogTitleWrapper>
       <S.DialogTitle {...props} ref={forwardedRef}>
@@ -26,7 +26,7 @@ const DialogTitle = React.forwardRef<HTMLHeadingElement, DialogTitleProps>(
 
 DialogTitle.displayName = 'DialogTitle';
 
-const DialogContent = React.forwardRef<HTMLDivElement, DialogContentProps>(
+const DialogContent = React.forwardRef<HTMLDivElement, DialogPrimitive.DialogContentProps>(
   ({ children, ...props }, forwardedRef) => (
     <S.DialogContent {...props} ref={forwardedRef}>
       {children}

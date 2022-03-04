@@ -1,12 +1,13 @@
-import NextLink from 'next/link';
+import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { HeartIcon, ChatIcon } from '@/icons';
-import styled, { css } from 'styled-components';
-import { useRouter } from 'next/router';
-import React from 'react';
-import { PostDialog } from '../PostDialog';
+
+import * as S from './styles';
 
 type ProfileMobileProps = {
+  onDialogOpen: (postId: number) => void;
   username: string;
   post: {
     id: number;
@@ -16,18 +17,17 @@ type ProfileMobileProps = {
   };
 };
 
-export const ProfilePost = ({ post, username }: ProfileMobileProps) => {
+export const ProfilePost = ({ post, username, onDialogOpen }: ProfileMobileProps) => {
   const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
 
   const router = useRouter();
-  const returnHref = React.useRef(router.asPath);
 
   if (isMobile) {
     return (
-      <li>
-        <NextLink key={post.id} href={`/p/${post.id}`}>
-          <a>
-            <Overlay>
+      <S.Box>
+        <Link href={`/p/${post.id}`} passHref>
+          <S.Link>
+            <S.Overlay>
               <span>
                 <ChatIcon size={24} />
                 {post.commentsCount[0].count}
@@ -36,84 +36,31 @@ export const ProfilePost = ({ post, username }: ProfileMobileProps) => {
                 <HeartIcon size={24} />
                 {post.likesCount[0].count}
               </span>
-            </Overlay>
+            </S.Overlay>
             <img src={post.image_url} alt={`Foto de ${username}`} />
-          </a>
-        </NextLink>
-      </li>
+          </S.Link>
+        </Link>
+      </S.Box>
     );
   }
 
-  // TODO: arrumar overlay, colocar img e overlay no mesmo nivel e em baixo do
-  // li
   return (
-    <PostDialog postId={post.id} returnHref={returnHref.current}>
-      <li>
-        <NextLink
-          key={post.id}
-          href={`${router.pathname}?username=${username}`}
-          as={`/p/${post.id}`}
-          shallow
-        >
-          <Link>
-            <Overlay>
-              <span>
-                <ChatIcon size={24} />
-                {post.commentsCount[0].count}
-              </span>
-              <span>
-                <HeartIcon size={24} />
-                {post.likesCount[0].count}
-              </span>
-            </Overlay>
-            <img src={post.image_url} alt={`Foto de ${username}`} />
-          </Link>
-        </NextLink>
-      </li>
-    </PostDialog>
+    <S.Box onClick={() => onDialogOpen(post.id)}>
+      <Link href={`${router.pathname}?username=${username}`} as={`/p/${post.id}`} shallow passHref>
+        <S.Link>
+          <S.Overlay>
+            <span>
+              <ChatIcon size={24} />
+              {post.commentsCount[0].count}
+            </span>
+            <span>
+              <HeartIcon size={24} />
+              {post.likesCount[0].count}
+            </span>
+          </S.Overlay>
+          <img src={post.image_url} alt={`Foto de ${username}`} />
+        </S.Link>
+      </Link>
+    </S.Box>
   );
 };
-
-const Overlay = styled.div`
-  ${({ theme }) => css`
-    grid-area: 1/1;
-    background-color: rgba(0, 0, 0, 0.3);
-    z-index: 2;
-
-    display: none;
-    justify-content: center;
-    align-items: center;
-    gap: ${theme.space.md};
-
-    color: white;
-
-    span {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-  `}
-`;
-
-const Link = styled.a`
-  ${({ theme }) => css`
-    display: grid;
-    grid-template-columns: 1fr;
-
-    img {
-      grid-area: 1/1;
-      width: 100%;
-      max-width: 29.3rem;
-      min-width: 12.3rem;
-      height: 100%;
-      max-height: 29.3rem;
-      min-height: 12.3rem;
-      object-fit: cover;
-      display: block;
-
-      @media ${theme.media.greaterThan('small')} {
-        height: 29.3rem;
-      }
-    }
-  `}
-`;

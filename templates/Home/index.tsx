@@ -1,4 +1,4 @@
-import { Post } from '@components/Post';
+import { HomePost } from '@components/HomePost';
 import { Spinner } from '@components/Spinner';
 import { Suggestions } from '@components/Suggestions';
 
@@ -24,7 +24,7 @@ const Home = () => {
   return (
     <S.Wrapper>
       {postsQuery.data.map((post) => (
-        <Post key={post.id} post={post} />
+        <HomePost key={post.id} post={post} />
       ))}
     </S.Wrapper>
   );

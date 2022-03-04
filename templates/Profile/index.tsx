@@ -6,31 +6,37 @@ import toast from 'react-hot-toast';
 import { useUser } from '@/context/AuthContext';
 import { useUploadAvatar } from '@/lib/useUploadAvatar';
 
-import { HeartIcon, ChatIcon, CameraIcon } from '@/icons';
+import { CameraIcon } from '@/icons';
 import { FollowDialog } from '@components/FollowDialog';
 import { FollowButton } from '@components/FollowButton';
 import { UnfollowButton } from '@components/UnfollowButton';
 import { Logo } from '@components/Logo';
 import { PostDialog } from '@components/PostDialog';
 import { Avatar } from '@components/Avatar';
+import { ProfilePost } from '@/components/ProfilePost';
 
 import { useProfile, useProfilePosts } from './queries';
 
 import * as S from './styles';
 
-// TODO: criar um unico modal para os posts, ao inves de cada post ter seu modal
 const ProfileTemplate = () => {
   const { user } = useUser();
   const router = useRouter();
   const username = router.query.username as string;
   const returnHref = React.useRef(router.asPath);
-  const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
 
   const profile = useProfile();
   const profilePosts = useProfilePosts();
   const uploadAvatar = useUploadAvatar();
 
   const [hasFollowed, setHasFollowed] = React.useState(profile.data?.hasFollowed);
+  const [open, setOpen] = React.useState(false);
+  const [postId, setPostId] = React.useState(0);
+
+  const onDialogOpen = (postId: number) => {
+    setPostId(postId);
+    setOpen(true);
+  };
 
   React.useEffect(() => {
     setHasFollowed(profile.data?.hasFollowed);
@@ -99,13 +105,13 @@ const ProfileTemplate = () => {
             <strong>{profile.data.postsCount[0].count}</strong> publicações
           </p>
 
-          <FollowDialog type="followers">
+          <FollowDialog scope="followers">
             <p>
               <strong>{profile.data.followersCount[0].count}</strong> seguidores
             </p>
           </FollowDialog>
 
-          <FollowDialog type="following">
+          <FollowDialog scope="following">
             <p>
               <strong>{profile.data.followingCount[0].count}</strong> seguindo
             </p>
@@ -134,57 +140,22 @@ const ProfileTemplate = () => {
           </S.NoPosts>
         )}
 
-        {profilePosts.data?.map((post) => {
-          if (isMobile) {
-            return (
-              <Link key={post.id} href={`/p/${post.id}`}>
-                <a>
-                  <li>
-                    <S.Overlay>
-                      <span>
-                        <ChatIcon size={24} />
-                        {post.commentsCount[0].count}
-                      </span>
-                      <span>
-                        <HeartIcon size={24} />
-                        {post.likesCount[0].count}
-                      </span>
-                    </S.Overlay>
-                    <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
-                  </li>
-                </a>
-              </Link>
-            );
-          }
-
-          return (
-            <Link
-              key={post.id}
-              href={`${router.pathname}?username=${profile.data.username}`}
-              as={`/p/${post.id}`}
-              shallow
-            >
-              <a>
-                <PostDialog postId={post.id} returnHref={returnHref.current}>
-                  <li>
-                    <S.Overlay>
-                      <span>
-                        <ChatIcon size={24} />
-                        {post.commentsCount[0].count}
-                      </span>
-                      <span>
-                        <HeartIcon size={24} />
-                        {post.likesCount[0].count}
-                      </span>
-                    </S.Overlay>
-                    <img src={post.image_url} alt={`Foto de ${profile.data.username}`} />
-                  </li>
-                </PostDialog>
-              </a>
-            </Link>
-          );
-        })}
+        {profilePosts.data?.map((post) => (
+          <ProfilePost
+            key={post.id}
+            post={post}
+            username={profile.data.username}
+            onDialogOpen={onDialogOpen}
+          />
+        ))}
       </S.Feed>
+
+      <PostDialog
+        postId={postId}
+        returnHref={returnHref.current}
+        open={open}
+        onOpenChange={setOpen}
+      />
     </>
   );
 };

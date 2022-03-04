@@ -9,7 +9,6 @@ import type { ProfileResponse } from '@/templates/Profile/queries';
 
 import { UserIcon } from '@/icons';
 import { Button } from '@components/Button';
-import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -57,9 +56,9 @@ export const UnfollowButton = ({ username, onFollowChange }: UnfollowButtonProps
           aria-label={`deixar de seguir ${username}`}
           size="medium"
           variant="secondary"
+          loading={followMutation.isLoading}
           disabled={followMutation.isLoading}
         >
-          {followMutation.isLoading && <Spinner />}
           <UserIcon size={16} />
         </Button>
       </AlertDialog.Trigger>
