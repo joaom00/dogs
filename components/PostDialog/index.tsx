@@ -28,7 +28,6 @@ export const PostDialog: React.FC<PostDialogProps> = ({
 }) => {
   const { user } = useUser();
   const router = useRouter();
-  // const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState('');
 
   const post = usePost(postId, open);
@@ -57,7 +56,7 @@ export const PostDialog: React.FC<PostDialogProps> = ({
       <DialogPrimitive.Portal>
         <S.DialogOverlay>
           <S.DialogContent
-            onCloseAutoFocus={() => router.push(returnHref ?? '', undefined, { shallow: true })}
+            onInteractOutside={() => router.push(returnHref ?? '', undefined, { shallow: true })}
           >
             <S.PostImage>
               {post.data?.image_url && (
@@ -114,7 +113,7 @@ export const PostDialog: React.FC<PostDialogProps> = ({
 
                     {comments.data?.map((comment) => (
                       <S.PostContentDescription key={comment.id}>
-                        <Link href={`/${comment.user.username}`}>
+                        <Link href={`/${post.data?.user?.username}`}>
                           <a>
                             <Avatar
                               src={comment.user.avatar_url}
@@ -125,7 +124,7 @@ export const PostDialog: React.FC<PostDialogProps> = ({
                         </Link>
 
                         <p>
-                          <Link href={`/${comment.user.username}`}>
+                          <Link href={`/${post.data?.user?.username}`}>
                             <a>
                               <strong>{comment.user.username}</strong>
                             </a>
