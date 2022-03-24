@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spinner } from '../Spinner';
+import { Spinner } from '@components/Spinner';
 
 import * as S from './styles';
 
@@ -8,7 +8,7 @@ type ButtonProps = {
   size?: 'small' | 'medium' | 'large';
   loading?: boolean;
   children: React.ReactNode;
-} & React.ButtonHTMLAttributes<HTMLButtonElement>;
+} & React.ComponentPropsWithRef<'button'>;
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'small', loading = false, children, ...props }, forwardedRef) => (

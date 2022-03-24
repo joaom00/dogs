@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const Wrapper = styled.ul`
+export const Box = styled.ul`
   ${({ theme }) => css`
     padding-top: ${theme.space.lg};
 
@@ -10,7 +10,7 @@ export const Wrapper = styled.ul`
   `}
 `;
 
-export const SpinnerWrapper = styled.div`
+export const SpinnerBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;

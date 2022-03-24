@@ -2,13 +2,13 @@ import { useMutation, useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 
-import { supabase } from '@/lib/supabase';
-import { useUser } from '@/context/AuthContext';
-
-import type { ProfileResponse } from '@/templates/Profile/queries';
+import { useUser } from '@context/AuthContext';
+import { supabase } from '@lib/supabase';
+import { profileKeys } from '@lib/queryFactory';
 
 import { UserIcon } from '@/icons';
 import { Button } from '@components/Button';
+import type { TProfile } from '@templates/Profile';
 
 import * as S from './styles';
 
@@ -22,14 +22,22 @@ export const UnfollowButton = ({ username, onFollowChange }: UnfollowButtonProps
 
   const queryClient = useQueryClient();
 
-  const userProfile = queryClient.getQueryData<ProfileResponse>([
-    { scope: 'profile', type: 'detail', username },
-  ]);
+  const userProfile = queryClient.getQueryData<TProfile>(
+    profileKeys.detail({
+      followerUsername: user?.user_metadata.username,
+      followedUsername: username,
+    })
+  );
 
   const followMutation = useMutation(followDelete, {
     onSuccess: () => {
-      queryClient.invalidateQueries([{ scope: 'followers', username }]);
-      queryClient.invalidateQueries([{ scope: 'profile', type: 'detail', username }]);
+      queryClient.invalidateQueries(profileKeys.follow('followers', username));
+      queryClient.invalidateQueries(
+        profileKeys.detail({
+          followerUsername: user?.user_metadata.username,
+          followedUsername: username,
+        })
+      );
       onFollowChange(false);
     },
   });

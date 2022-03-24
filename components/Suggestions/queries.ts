@@ -1,27 +1,34 @@
-import { useUser } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabase';
-import { useQuery } from 'react-query';
+import { type QueryFunctionContext, useQuery } from 'react-query';
 
-type UsersResponse = {
+import { useUser } from '@context/AuthContext';
+import { supabase } from '@lib/supabase';
+import { assertResponseOk } from '@lib/apiError';
+import { profileKeys } from '@lib/queryFactory';
+
+type User = {
   id: string;
   avatar_url: string;
   username: string;
 };
 
-const getUsers = async (username: string): Promise<UsersResponse[] | null> => {
-  const usersResponse = await supabase
+type GetUsersContext = QueryFunctionContext<ReturnType<typeof profileKeys['suggestion']>>;
+
+const getUsers = async (ctx: GetUsersContext): Promise<Array<User> | null> => {
+  const [{ username }] = ctx.queryKey;
+
+  const response = await supabase
     .from('profiles')
     .select('id, avatar_url, username')
     .not('username', 'eq', username)
     .range(0, 2, { foreignTable: 'posts' });
 
-  return usersResponse.data;
+  assertResponseOk(response);
+
+  return response.data;
 };
 
 export const useUserSuggestions = () => {
   const { user } = useUser();
 
-  return useQuery([{ scope: 'suggestions', username: user?.user_metadata.username }], () =>
-    getUsers(user?.user_metadata.username as string)
-  );
+  return useQuery(profileKeys.suggestion(user?.user_metadata.username), getUsers);
 };

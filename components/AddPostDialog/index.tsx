@@ -3,8 +3,9 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 
-import { supabase } from '@/lib/supabase';
-import { useUser } from '@/context/AuthContext';
+import { useUser } from '@context/AuthContext';
+import { supabase } from '@lib/supabase';
+import { postKeys } from '@lib/queryFactory';
 
 import { CloseIcon } from '@/icons';
 import { FileInput } from '@components/FileInput';
@@ -41,10 +42,7 @@ export const AddPostDialog = (props: DialogPrimitive.DialogProps) => {
   };
 
   const createPostMutation = useMutation(createPost, {
-    onSuccess: () =>
-      queryClient.invalidateQueries([
-        { scope: 'profile', type: 'posts', username: user?.user_metadata.username },
-      ]),
+    onSuccess: () => queryClient.invalidateQueries(postKeys.profile(user?.user_metadata.username)),
   });
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {

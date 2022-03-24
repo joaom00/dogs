@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components';
-import { AvatarImage } from '@radix-ui/react-avatar';
 
 export const CommentsHeaderWrapper = styled.div`
   position: fixed;
@@ -26,22 +25,6 @@ export const CommentsHeader = styled.header`
       justify-self: start;
     }
   `}
-`;
-
-export const PostContentHeaderImage = styled(AvatarImage)`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
-`;
-
-export const PostContentHeaderImageFallback = styled.img`
-  flex-shrink: 0;
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  border-radius: 9999px;
 `;
 
 export const FormWrapper = styled.form`

@@ -23,15 +23,16 @@ export const PostDialog: React.FC<PostDialogProps> = ({
   children,
   postId,
   returnHref,
-  ...props
+  open,
+  onOpenChange,
 }) => {
   const { user } = useUser();
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+  // const [open, setOpen] = React.useState(false);
   const [content, setContent] = React.useState('');
 
-  const post = usePost(postId, props.open ?? open);
-  const comments = useComments(postId, props.open ?? open);
+  const post = usePost(postId, open);
+  const comments = useComments(postId, open);
   const addComment = useAddComment();
 
   const onSubmit = (event: React.MouseEvent) => {
@@ -50,8 +51,8 @@ export const PostDialog: React.FC<PostDialogProps> = ({
   };
 
   return (
-    <DialogPrimitive.Root open={open} onOpenChange={setOpen} {...props}>
-      <DialogPrimitive.Trigger asChild>{children}</DialogPrimitive.Trigger>
+    <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
+      <DialogPrimitive.Trigger>{children}</DialogPrimitive.Trigger>
 
       <DialogPrimitive.Portal>
         <S.DialogOverlay>

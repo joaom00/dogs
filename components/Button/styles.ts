@@ -1,9 +1,9 @@
 import styled, { css, DefaultTheme } from 'styled-components';
 
-import { ProfileInfo } from '@/templates/Profile/styles';
-import { SignUpWrapper } from '@/templates/SignUp/styles';
-import { SignInWrapper } from '@/templates/SignIn/styles';
-import { Wrapper as EditProfileWrapper } from '@/templates/EditProfile/styles';
+import { UsernameBox } from '@templates/Profile/styles';
+import { SignUpWrapper } from '@templates/SignUp/styles';
+import { SignInWrapper } from '@templates/SignIn/styles';
+import { Wrapper as EditProfileWrapper } from '@templates/EditProfile/styles';
 
 type WrapperProps = {
   variant: 'primary' | 'secondary';
@@ -79,7 +79,7 @@ export const Wrapper = styled.button<WrapperProps>`
     }
 
     @media ${theme.media.lessThan('medium')} {
-      ${ProfileInfo} & {
+      ${UsernameBox} & {
         width: 100%;
       }
     }

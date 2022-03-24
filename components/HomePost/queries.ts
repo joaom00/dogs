@@ -1,26 +1,30 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@lib/supabase';
+import { assertResponseOk } from '@lib/apiError';
+import { postKeys } from '@lib/queryFactory';
 
-import type { PostResponse as PostDialogResponse } from '@/components/PostDialog/queries';
-import type { PostResponse } from '@/templates/Home/queries';
+import type { PostResponse as PostDialogResponse } from '@components/PostDialog/queries';
+import type { Post } from '@templates/Home';
 
 /* -------------------------------------------------------------------------------------------------
  * useAddLike
  * -----------------------------------------------------------------------------------------------*/
 
-type CreateLikeData = {
+type CreateLikePayload = {
   postId: number;
   userId: string;
 };
 
-const createLike = async ({ postId, userId }: CreateLikeData) => {
-  const res = await supabase.from('likes').insert({
+const createLike = async ({ postId, userId }: CreateLikePayload) => {
+  const response = await supabase.from('likes').insert({
     post_id: postId,
     user_id: userId,
   });
 
-  return res.data;
+  assertResponseOk(response);
+
+  return response.data;
 };
 
 export const useAddLike = () => {
@@ -28,9 +32,7 @@ export const useAddLike = () => {
 
   return useMutation(createLike, {
     onMutate: ({ postId }) => {
-      const previousPosts = queryClient.getQueryData<PostResponse[]>([
-        { scope: 'posts', type: 'feed' },
-      ]);
+      const previousPosts = queryClient.getQueryData<Array<Post>>(postKeys.feed());
 
       if (!previousPosts) return;
 
@@ -44,15 +46,13 @@ export const useAddLike = () => {
           : post
       );
 
-      queryClient.setQueryData([{ scope: 'posts', type: 'feed' }], posts);
+      queryClient.setQueryData(postKeys.feed(), posts);
 
-      const postDetail = queryClient.getQueryData<PostDialogResponse>([
-        { scope: 'post', type: 'detail', postId },
-      ]);
+      const postDetail = queryClient.getQueryData<PostDialogResponse>(postKeys.detail({ postId }));
 
       if (!postDetail) return;
 
-      queryClient.setQueryData([{ scope: 'post', type: 'detail', postId }], () => ({
+      queryClient.setQueryData(postKeys.detail({ postId }), () => ({
         ...postDetail,
         hasLiked: !postDetail.hasLiked,
         likesCount: [
@@ -69,15 +69,20 @@ export const useAddLike = () => {
  * useDeleteLike
  * -----------------------------------------------------------------------------------------------*/
 
-type DeleteLikeData = {
+type DeleteLikePayload = {
   postId: number;
   userId: string;
 };
 
-const deleteLike = async ({ postId, userId }: DeleteLikeData) => {
-  const res = await supabase.from('likes').delete().match({ post_id: postId, user_id: userId });
+const deleteLike = async ({ postId, userId }: DeleteLikePayload) => {
+  const response = await supabase
+    .from('likes')
+    .delete()
+    .match({ post_id: postId, user_id: userId });
 
-  return res.data;
+  assertResponseOk(response);
+
+  return response.data;
 };
 
 export const useDeleteLike = () => {
@@ -85,9 +90,7 @@ export const useDeleteLike = () => {
 
   return useMutation(deleteLike, {
     onMutate: ({ postId }) => {
-      const previousPosts = queryClient.getQueryData<PostResponse[]>([
-        { scope: 'posts', type: 'feed' },
-      ]);
+      const previousPosts = queryClient.getQueryData<Array<Post>>(postKeys.feed());
 
       if (!previousPosts) return;
 
@@ -101,15 +104,13 @@ export const useDeleteLike = () => {
           : post
       );
 
-      queryClient.setQueryData([{ scope: 'posts', type: 'feed' }], posts);
+      queryClient.setQueryData(postKeys.feed(), posts);
 
-      const postDetail = queryClient.getQueryData<PostDialogResponse>([
-        { scope: 'post', type: 'detail', postId },
-      ]);
+      const postDetail = queryClient.getQueryData<PostDialogResponse>(postKeys.detail({ postId }));
 
       if (!postDetail) return;
 
-      queryClient.setQueryData([{ scope: 'post', type: 'detail', postId }], () => ({
+      queryClient.setQueryData(postKeys.detail({ postId }), () => ({
         ...postDetail,
         hasLiked: !postDetail.hasLiked,
         likesCount: [

@@ -1,14 +1,15 @@
-import { useUser } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabase';
-import { QueryFunctionContext, useMutation, useQuery } from 'react-query';
+import { type QueryFunctionContext, useMutation, useQuery } from 'react-query';
 
-type QueryKey = {
-  scope: string;
-  type: string;
-  username: string;
-}[];
+import { useUser } from '@context/AuthContext';
+import { supabase } from '@lib/supabase';
+import { profileKeys } from '@lib/queryFactory';
+import { assertResponseOk } from '@lib/apiError';
 
-type UserResponse = {
+/* -------------------------------------------------------------------------------------------------
+ * useProfileEdit
+ * -----------------------------------------------------------------------------------------------*/
+
+type User = {
   id: string;
   name: string;
   username: string;
@@ -17,36 +18,37 @@ type UserResponse = {
   bio: string;
 };
 
-export const getProfile = async ({ queryKey }: QueryFunctionContext<QueryKey>) => {
-  const [{ username }] = queryKey;
+type GetProfileContext = QueryFunctionContext<ReturnType<typeof profileKeys['edit']>>;
 
-  const response = await supabase
-    .from<UserResponse>('profiles')
-    .select('*')
-    .eq('username', username);
+export const getProfile = async (ctx: GetProfileContext) => {
+  const [{ username }] = ctx.queryKey;
 
-  if (!!response.error) {
-    return {} as UserResponse;
-  }
+  if (!username) return;
 
-  return response.data[0];
+  const response = await supabase.from<User>('profiles').select('*').eq('username', username);
+
+  assertResponseOk(response);
+
+  return response.data?.[0];
 };
 
 export const useProfileEdit = () => {
   const { user } = useUser();
   const username = user?.user_metadata.username;
 
-  return useQuery([{ scope: 'profile', type: 'edit', username }], getProfile);
+  return useQuery(profileKeys.edit(username), getProfile);
 };
 
-const updateProfile = async (data: Partial<UserResponse>) => {
-  const profileResponse = await supabase.from<UserResponse>('profiles').upsert(data);
+/* -------------------------------------------------------------------------------------------------
+ * useUpdateProfile
+ * -----------------------------------------------------------------------------------------------*/
 
-  if (!!profileResponse.error) {
-    throw new Error('Não foi possível atualizar seu perfil');
-  }
+const updateProfile = async (data: Partial<User>) => {
+  const response = await supabase.from<User>('profiles').upsert(data);
 
-  return profileResponse.data[0];
+  assertResponseOk(response);
+
+  return response.data?.[0];
 };
 
 export const useUpdateProfile = () => {

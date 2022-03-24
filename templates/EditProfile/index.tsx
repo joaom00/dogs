@@ -7,7 +7,7 @@ import * as yup from 'yup';
 import { supabase } from '@/lib/supabase';
 import { useYupValidationResolver } from '@/hooks';
 
-import { Button } from '@/components/Button';
+import { Button } from '@components/Button';
 import { Avatar } from '@components/Avatar';
 
 import { useProfileEdit, useUpdateProfile } from './queries';
@@ -38,8 +38,8 @@ export const EditProfile = () => {
       username: profile.data?.username,
       email: profile.data?.email,
       name: profile.data?.name,
-      avatar_url: profile.data?.avatar_url,
     },
+    shouldUnregister: true,
   });
 
   function getFilePreview() {

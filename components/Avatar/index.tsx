@@ -2,9 +2,9 @@ import React from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
-import { ProfileAvatarWrapper } from '@/templates/Profile/styles';
-import { PostContent } from '@/templates/Post/PostLayoutDesktop/styles';
 import { PostContentHeader } from '@components/PostDialog/styles';
+import { AvatarBox } from '@templates/Profile/styles';
+import { PostContent } from '@templates/Post/PostLayoutDesktop/styles';
 
 type AvatarProps = {
   src?: string;
@@ -54,7 +54,7 @@ const AvatarFallback = styled.img<{ size: number }>`
 `;
 
 const composeStyles = (theme: DefaultTheme) => css`
-  ${ProfileAvatarWrapper} & {
+  ${AvatarBox} & {
     @media ${theme.media.greaterThan('small')} {
       width: 18.4rem;
       height: 18.4rem;

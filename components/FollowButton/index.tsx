@@ -1,10 +1,10 @@
-import { useMutation, useQueryClient } from 'react-query';
 import toast from 'react-hot-toast';
 
-import { supabase } from '@/lib/supabase';
 import { useUser } from '@/context/AuthContext';
 
 import { Button } from '@components/Button';
+
+import { useAddFollow } from './queries';
 
 type FollowButtonProps = {
   username: string;
@@ -13,41 +13,29 @@ type FollowButtonProps = {
 
 export const FollowButton = ({ username, onFollowChange }: FollowButtonProps) => {
   const { user } = useUser();
-
-  const queryClient = useQueryClient();
-
-  const followMutation = useMutation(followPost, {
-    onSuccess: () => {
-      queryClient.invalidateQueries([{ scope: 'followers', username }]);
-      queryClient.invalidateQueries([{ scope: 'profile', type: 'detail', username }]);
-      onFollowChange(true);
-    },
-  });
-
-  async function followPost() {
-    const { error } = await supabase.from('follows').insert([
-      {
-        follower_username: user?.user_metadata.username,
-        followed_username: username,
-      },
-    ]);
-
-    if (error) {
-      toast.error('Algo deu errado, tente novamente mais tarde');
-      return;
-    }
-  }
+  const addFollow = useAddFollow();
 
   function onSubmit() {
-    followMutation.mutate();
+    addFollow.mutate(
+      {
+        followedUsername: username,
+        followerUsername: user?.user_metadata.username,
+      },
+      {
+        onSuccess: () => {
+          onFollowChange(true);
+        },
+        onError: (error) => {
+          if (error instanceof Error) {
+            toast.error(error.message);
+          }
+        },
+      }
+    );
   }
 
   return (
-    <Button
-      onClick={onSubmit}
-      disabled={followMutation.isLoading}
-      loading={followMutation.isLoading}
-    >
+    <Button onClick={onSubmit} disabled={addFollow.isLoading} loading={addFollow.isLoading}>
       Seguir
     </Button>
   );

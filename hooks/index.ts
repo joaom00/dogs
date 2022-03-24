@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import { AnySchema, ValidationError } from 'yup';
 
 export const useYupValidationResolver = (validationSchema: AnySchema) =>
@@ -31,3 +32,19 @@ export const useYupValidationResolver = (validationSchema: AnySchema) =>
     },
     [validationSchema]
   );
+
+export const useContextualRoute = () => {
+  const router = useRouter();
+  const returnHref = React.useRef(router.asPath);
+
+  React.useEffect(() => {
+    returnHref.current = router.asPath;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.username]);
+
+  const query = new URLSearchParams(router.query as Record<string, string>).toString();
+
+  const href = `${router.pathname}?${query}`;
+
+  return [href, returnHref.current] as const;
+};

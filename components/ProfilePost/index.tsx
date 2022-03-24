@@ -1,14 +1,14 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 import { HeartIcon, ChatIcon } from '@/icons';
 
 import * as S from './styles';
 
-type ProfileMobileProps = {
-  onDialogOpen: (postId: number) => void;
+type ProfilePostProps = {
   username: string;
+  href: string;
+  onOpenChange: (open: boolean) => void;
   post: {
     id: number;
     image_url: string;
@@ -17,10 +17,8 @@ type ProfileMobileProps = {
   };
 };
 
-export const ProfilePost = ({ post, username, onDialogOpen }: ProfileMobileProps) => {
+export const ProfilePost = ({ post, username, href, onOpenChange }: ProfilePostProps) => {
   const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
-
-  const router = useRouter();
 
   if (isMobile) {
     return (
@@ -45,8 +43,8 @@ export const ProfilePost = ({ post, username, onDialogOpen }: ProfileMobileProps
   }
 
   return (
-    <S.Box onClick={() => onDialogOpen(post.id)}>
-      <Link href={`${router.pathname}?username=${username}`} as={`/p/${post.id}`} shallow passHref>
+    <S.Box onClick={() => onOpenChange(true)}>
+      <Link href={href} as={`/p/${post.id}`} shallow passHref>
         <S.Link>
           <S.Overlay>
             <span>

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { useUser } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { ProfileResponse } from '@/templates/Profile/queries';
+import type { TProfile } from '@templates/Profile';
 
 const uploadAvatar = async ({ file, username }: { file: File; username: string }) => {
   await supabase.storage.from(`avatars`).upload(`${username}-${file.name}`, file);
@@ -20,7 +20,7 @@ export const useUploadAvatar = () => {
     onMutate: ({ file, username }) => {
       const key = [{ scope: 'profile', username }];
 
-      const userLoggedData = queryClient.getQueryData<ProfileResponse>(key);
+      const userLoggedData = queryClient.getQueryData<TProfile>(key);
 
       queryClient.setQueryData(key, () => ({
         ...userLoggedData,

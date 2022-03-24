@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-export const ProfileWrapper = styled.section`
+export const Box = styled.section`
   ${({ theme }) => css`
     max-width: 93.5rem;
     margin: 0 auto;
@@ -30,11 +30,11 @@ export const ProfileWrapper = styled.section`
   `}
 `;
 
-export const ProfileAvatarWrapper = styled.label`
+export const AvatarBox = styled.label`
   grid-area: profileImage;
 `;
 
-export const ProfileInfo = styled.div`
+export const UsernameBox = styled.div`
   ${({ theme }) => css`
     grid-area: profileInfo;
 
@@ -47,7 +47,7 @@ export const ProfileInfo = styled.div`
   `}
 `;
 
-export const ProfileUsername = styled.p`
+export const Username = styled.p`
   ${({ theme }) => css`
     font-size: ${theme.font.sizes.xlarge};
     color: ${theme.colors.sand12};
@@ -60,7 +60,7 @@ export const ProfileUsername = styled.p`
   `}
 `;
 
-export const ProfileStats = styled.div`
+export const Stats = styled.div`
   ${({ theme }) => css`
     grid-area: profileStats;
 
@@ -113,7 +113,7 @@ export const ProfileStats = styled.div`
   `}
 `;
 
-export const ProfileBio = styled.div`
+export const Bio = styled.div`
   ${({ theme }) => css`
     grid-area: profileBio;
     line-height: ${theme.space.md};

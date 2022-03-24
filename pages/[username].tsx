@@ -1,13 +1,13 @@
-import { GetServerSidePropsContext } from 'next';
+import type { GetServerSidePropsContext } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@lib/supabase';
+import { type ProfileDetailOptions, postKeys, profileKeys } from '@lib/queryFactory';
 
-import ProfileTemplate from '@/templates/Profile';
-import { getProfile, getUserPosts } from '@/templates/Profile/queries';
+import { Profile, getProfile, getUserPosts } from '@templates/Profile';
 
-export default function Profile() {
-  return <ProfileTemplate />;
+export default function ProfilePage() {
+  return <Profile />;
 }
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
@@ -15,11 +15,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const username = query.username as string;
   const { user } = await supabase.auth.api.getUserByCookie(ctx.req);
 
+  const options: ProfileDetailOptions = {
+    followedUsername: username,
+    followerUsername: user?.user_metadata.username,
+  };
+
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([{ scope: 'profile', type: 'detail', username }], () =>
-    getProfile(username, user?.user_metadata.username)
-  );
-  await queryClient.prefetchQuery([{ scope: 'profile', type: 'posts', username }], getUserPosts);
+  await queryClient.prefetchQuery(profileKeys.detail(options), getProfile);
+  await queryClient.prefetchQuery(postKeys.profile(username), getUserPosts);
 
   return {
     props: {

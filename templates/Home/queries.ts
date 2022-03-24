@@ -1,10 +1,15 @@
-import { useQuery } from 'react-query';
-
-import { supabase } from '@/lib/supabase';
+import { type QueryFunctionContext, useQuery } from 'react-query';
 
 import { useUser } from '@/context/AuthContext';
+import { supabase } from '@lib/supabase';
+import { type PostFeedOptions, postKeys } from '@lib/queryFactory';
+import { assertResponseOk } from '@lib/apiError';
 
-export type PostResponse = {
+/* -------------------------------------------------------------------------------------------------
+ * usePosts
+ * -----------------------------------------------------------------------------------------------*/
+
+export type Post = {
   id: number;
   description: string;
   image_url: string;
@@ -19,25 +24,33 @@ export type PostResponse = {
   likesCount: Array<{ count: number }>;
 };
 
-export const getPosts = async (userId: string, username: string): Promise<PostResponse[]> => {
+type GetPostsContext = QueryFunctionContext<ReturnType<typeof postKeys['feed']>>;
+
+export const getPosts = async (ctx: GetPostsContext): Promise<Array<Post>> => {
+  const [{ userId, username }] = ctx.queryKey;
+
   const followersResponse = await supabase
     .from('follows')
     .select('followed_username')
     .eq('follower_username', username);
 
-  if (!followersResponse.data?.length) return [] as PostResponse[];
+  assertResponseOk(followersResponse);
+
+  if (!followersResponse.data?.length) return [] as Post[];
 
   const followers = followersResponse.data.map((follower) => follower.followed_username);
 
   const postsResponse = await supabase
-    .from<PostResponse>('posts')
+    .from<Post>('posts')
     .select(
       'id, description, image_url, created_at, owner:profiles!user_username(username, avatar_url), commentsCount:comments!post_id(count), likesCount:likes!post_id(count)'
     )
     .in('user_username', followers)
     .order('created_at', { ascending: false });
 
-  if (!postsResponse.data?.length) return [] as PostResponse[];
+  assertResponseOk(postsResponse);
+
+  if (!postsResponse.data?.length) return [] as Post[];
 
   for await (const post of postsResponse.data) {
     const likeResponse = await supabase
@@ -54,7 +67,10 @@ export const getPosts = async (userId: string, username: string): Promise<PostRe
 export const usePosts = () => {
   const { user } = useUser();
 
-  return useQuery([{ scope: 'posts', type: 'feed' }], () =>
-    getPosts(user?.id as string, user?.user_metadata.username)
-  );
+  const options: PostFeedOptions = {
+    userId: user?.id,
+    username: user?.user_metadata.username,
+  };
+
+  return useQuery(postKeys.feed(options), getPosts);
 };

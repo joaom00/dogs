@@ -1,50 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useQuery } from 'react-query';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
-
-import { supabase } from '@/lib/supabase';
 
 import { Spinner } from '@components/Spinner';
 import * as Dialog from '@components/Dialog';
 
 import * as S from './styles';
 
-type FollowResponse = Array<{
-  follow: {
-    name: string;
-    username: string;
-    avatar_url: string;
-  };
-}>;
+import { useFollows } from './queries';
 
 type FollowDialogProps = DialogPrimitive.DialogProps & {
   scope: 'followers' | 'following';
 };
 
-const querys = {
-  followers: 'follow:follower_username(name, username, avatar_url)',
-  following: 'follow:followed_username(name, username, avatar_url)',
-};
-
 export const FollowDialog = ({ children, scope, ...props }: FollowDialogProps) => {
-  const router = useRouter();
-
   const [open, setOpen] = React.useState(false);
 
-  async function getFollows(): Promise<FollowResponse | null> {
-    const res = await supabase
-      .from('follows')
-      .select(querys[scope])
-      .eq(scope === 'followers' ? 'followed_username' : 'follower_username', router.query.username);
-
-    return res.data;
-  }
-
-  const followQuery = useQuery([{ scope, username: router.query.username }], getFollows, {
-    enabled: open,
-  });
+  const follow = useFollows(scope, open);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen} {...props}>
@@ -52,13 +24,13 @@ export const FollowDialog = ({ children, scope, ...props }: FollowDialogProps) =
       <Dialog.Content>
         <Dialog.Title>{scope === 'followers' ? 'Seguidores' : 'Seguindo'}</Dialog.Title>
 
-        {followQuery.isLoading && (
+        {follow.isLoading && (
           <S.SpinnerWrapper>
             <Spinner />
           </S.SpinnerWrapper>
         )}
 
-        {followQuery.data?.length === 0 && (
+        {follow.isSuccess && !follow.data?.length && (
           <S.NoFollow>
             {scope === 'followers'
               ? 'Você não possui nenhum seguidor'
@@ -66,7 +38,7 @@ export const FollowDialog = ({ children, scope, ...props }: FollowDialogProps) =
           </S.NoFollow>
         )}
 
-        {followQuery.data?.map(({ follow }) => (
+        {follow.data?.map(({ follow }) => (
           <S.FollowWrapper key={follow.username}>
             <Link href={`/${follow.username}`}>
               <a onClick={() => setOpen(false)}>

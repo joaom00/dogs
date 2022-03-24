@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 import { useUser } from '@/context/AuthContext';
 
 import { ArrowLeftIcon } from '@/icons';
-import { useAddComment, useComments, usePost } from '@components/PostDialog/queries';
-import { Avatar, AvatarFallback } from '@components/Avatar';
+import { Avatar } from '@components/Avatar';
 import { Spinner } from '@components/Spinner';
+import { useAddComment, useComments, usePost } from '@components/PostDialog/queries';
 
 import * as S from './styles';
 
@@ -62,15 +62,11 @@ const Comments = () => {
         <S.PostContentDescription>
           <Link href={`/${post.data?.user.username}`}>
             <a>
-              <Avatar>
-                <S.PostContentHeaderImage
-                  src={post.data?.user.avatar_url}
-                  alt={`Foto de perfil de ${post.data?.user.username}`}
-                />
-                <AvatarFallback>
-                  <S.PostContentHeaderImageFallback />
-                </AvatarFallback>
-              </Avatar>
+              <Avatar
+                src={post.data?.user.avatar_url}
+                alt={`Foto de perfil de ${post.data?.user.username}`}
+                size={32}
+              />
             </a>
           </Link>
 
@@ -97,15 +93,11 @@ const Comments = () => {
           <S.PostComment key={comment.id}>
             <Link href={`/${comment.user.username}`}>
               <a>
-                <Avatar>
-                  <S.PostContentHeaderImage
-                    src={comment.user.avatar_url}
-                    alt={`Foto de perfil de ${comment.user.username}`}
-                  />
-                  <AvatarFallback>
-                    <S.PostContentHeaderImageFallback />
-                  </AvatarFallback>
-                </Avatar>
+                <Avatar
+                  src={comment.user.avatar_url}
+                  alt={`Foto de perfil de ${comment.user.username}`}
+                  size={32}
+                />
               </a>
             </Link>
 

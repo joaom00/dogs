@@ -18,7 +18,11 @@
     "plugins": [{ "name": "typescript-styled-plugin" }],
     "paths": {
       "@/*": ["./*"],
-      "@components/*": ["./components/*"]
+      "@components/*": ["./components/*"],
+      "@templates/*": ["./templates/*"],
+      "@lib/*": ["./lib/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@context/*": ["./context/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

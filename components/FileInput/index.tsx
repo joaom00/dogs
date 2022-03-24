@@ -6,7 +6,7 @@ import * as S from './styles';
 
 type FileInputProps = {
   name: string;
-} & React.InputHTMLAttributes<HTMLInputElement>;
+} & React.ComponentPropsWithoutRef<'input'>;
 
 export const FileInput = ({ name, ...props }: FileInputProps) => {
   const { register, unregister, watch, setValue } = useFormContext();

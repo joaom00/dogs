@@ -1,24 +1,24 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 import { useUser } from '@/context/AuthContext';
 
 import { ChatIcon, HeartIcon } from '@/icons';
 import { PostDialog } from '@components/PostDialog';
-import type { PostResponse } from '@/templates/Home/queries';
+import type { Post } from '@/templates/Home/queries';
 
 import { useAddLike, useDeleteLike } from './queries';
 
 import * as S from './styles';
 import { formatDate } from '@/lib/formatDate';
+import { useContextualRoute } from '@/hooks';
 
-export const HomePost = ({ post }: { post: PostResponse }) => {
-  const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
-  const router = useRouter();
-  const returnHref = React.useRef(router.asPath);
+export const HomePost = ({ post }: { post: Post }) => {
+  const [href, returnHref] = useContextualRoute();
 
   const [open, setOpen] = React.useState(false);
+
+  const isMobile = /iPhone|iPad|Android/i.test(globalThis?.navigator?.userAgent);
 
   return (
     <>
@@ -41,7 +41,7 @@ export const HomePost = ({ post }: { post: PostResponse }) => {
             </a>
           </Link>
         ) : (
-          <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
+          <Link href={`/`} as={`/p/${post.id}`} shallow>
             <a onClick={() => setOpen(true)}>
               <S.PostImage src={post.image_url} />
             </a>
@@ -51,7 +51,7 @@ export const HomePost = ({ post }: { post: PostResponse }) => {
         <S.PostActions>
           {post.hasLiked ? <UnlikeButton postId={post.id} /> : <LikeButton postId={post.id} />}
 
-          <Link href={`/?postId=${post.id}`} as={`/p/${post.id}`} shallow>
+          <Link href={href} as={`/p/${post.id}`} shallow>
             <a>
               <ChatIcon onClick={() => setOpen(true)} size={24} />
             </a>
@@ -85,12 +85,7 @@ export const HomePost = ({ post }: { post: PostResponse }) => {
         <S.PostCreatedInfo>{formatDate(post.created_at)}</S.PostCreatedInfo>
       </S.Wrapper>
 
-      <PostDialog
-        postId={post.id}
-        returnHref={returnHref.current}
-        open={open}
-        onOpenChange={setOpen}
-      />
+      <PostDialog postId={post.id} returnHref={returnHref} open={open} onOpenChange={setOpen} />
     </>
   );
 };
