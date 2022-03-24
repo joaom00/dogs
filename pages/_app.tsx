@@ -7,10 +7,12 @@ import { ThemeProvider } from 'styled-components';
 import { Toaster } from 'react-hot-toast';
 
 import { Header } from '@components/Header';
+import { Progress } from '@components/NProgress';
 import Providers from '@/context';
 
 import GlobalStyles from 'styles/global';
 import theme from '../styles/theme';
+import '../styles/nprogress.css';
 
 type AppProps = NextAppProps & {
   Component: NextPage & {
@@ -39,6 +41,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <ThemeProvider theme={theme}>
             {withHeader && <Header />}
             <Component {...pageProps} />
+            <Progress />
             <Toaster />
             <GlobalStyles />
           </ThemeProvider>
