@@ -60,20 +60,20 @@ const Comments = () => {
 
       {post.isSuccess && (
         <S.PostContentDescription>
-          <Link href={`/${post.data?.user.username}`}>
+          <Link href={`/${post.data?.user?.username}`}>
             <a>
               <Avatar
-                src={post.data?.user.avatar_url}
-                alt={`Foto de perfil de ${post.data?.user.username}`}
+                src={post.data?.user?.avatar_url}
+                alt={`Foto de perfil de ${post.data?.user?.username}`}
                 size={32}
               />
             </a>
           </Link>
 
           <p>
-            <Link href={`/${post.data?.user.username}`}>
+            <Link href={`/${post.data?.user?.username}`}>
               <a>
-                <strong>{post.data?.user.username}</strong>
+                <strong>{post.data?.user?.username}</strong>
               </a>
             </Link>{' '}
             {post.data?.description}
