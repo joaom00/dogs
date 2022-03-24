@@ -22,7 +22,7 @@
 
 ## 🔖 Sobre
 
-Dogs é um instagram para cachorros onde o usuário pode publicar uma foto, comentar, curtir e seguir outros usuários. Nessa aplicação utilizo, na parte web, [React](https://reactjs.org) com [TypeScript](https://www.typescriptlang.com), [Styled Components](https://styled-components.com) para os estilos e o [React Query](https://react-query.tanstack.com) para fazer a busca, cache e atualização dos dados do servidor que foi feito em [Node](https://nodejs.org/en/) com [Express](https://expressjs.com/pt-br/) e [TypeORM](https://typeorm.io/#/).
+Dogs é um instagram para cachorros onde o usuário pode publicar uma foto, comentar, curtir e seguir outros usuários. Nessa aplicação utilizo, na parte web, [React](https://reactjs.org) com [TypeScript](https://www.typescriptlang.com), [Styled Components](https://styled-components.com) para os estilos e o [React Query](https://react-query.tanstack.com) para fazer a busca, cache e atualização dos dados do servidor.
 
 ## 📦 Tecnologias
 
@@ -33,12 +33,7 @@ Dogs é um instagram para cachorros onde o usuário pode publicar uma foto, come
   - [Styled Components](https://styled-components.com)
   - [React Query](https://react-query.tanstack.com)
 - Backend
-  - [NodeJS](https://nodejs.org/en/)
-  - [TypeScript](https://www.typescriptlang.org)
-  - [PostgreSQL](https://www.postgresql.org)
-  - [Express](https://expressjs.com/pt-br/)
-  - [TypeORM](https://typeorm.io/#/)
-  - [JWT](https://jwt.io)
+  - [Supabase](https://supabase.com/)
 
 ## 🚀 Como Executar
 
